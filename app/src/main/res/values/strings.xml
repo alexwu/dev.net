@@ -24,4 +24,5 @@
     <!-- Strings related to user -->
     <string name="username">Jeff Kumquat</string>
     <string name="email">boss@dev.net</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
