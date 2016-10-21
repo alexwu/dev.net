@@ -25,4 +25,6 @@
     <string name="username">Jeff Kumquat</string>
     <string name="email">boss@dev.net</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_nav_drawer_client">NavDrawerClient</string>
+    <string name="title_activity_dev_search_page">DevSearchPage</string>
 </resources>
