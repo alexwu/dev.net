@@ -32,6 +32,10 @@
             android:label="@string/title_activity_nav_drawer_client"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".RecyclerViewActivity"
+            android:label="Home"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".DevSearchPage"
             android:label="@string/title_activity_dev_search_page"
             android:theme="@style/AppTheme.NoActionBar" />

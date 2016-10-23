@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "5383809475",
+    "firebase_url": "https://dev-net.firebaseio.com",
+    "project_id": "dev-net",
+    "storage_bucket": "dev-net.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5383809475:android:bad2b02ce2459279",
+        "android_client_info": {
+          "package_name": "cse110group4.devnet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5383809475-fghc0g8a45g61jifppcj332kr7js0o9m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1VcoBh7u4XnQhCy4WlFaZXyhVZes7VGk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
