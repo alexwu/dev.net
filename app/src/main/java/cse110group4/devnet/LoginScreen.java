@@ -375,7 +375,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
             }
 
             // TODO: register the new account here.
-            return true;
+            return false;
         }
 
         @Override
