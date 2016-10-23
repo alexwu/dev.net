@@ -25,5 +25,4 @@ public class DevSearchPage extends AppCompatActivity {
             }
         });
     }
-
 }
