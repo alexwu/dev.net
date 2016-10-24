@@ -49,7 +49,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
+    public void onBindViewHolder(final PersonViewHolder personViewHolder, int i) {
         personViewHolder.personName.setText(projects.get(i).name);
         personViewHolder.personAge.setText(projects.get(i).age);
         personViewHolder.personPhoto.setImageResource(projects.get(i).photoId);
@@ -60,8 +60,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
                 //implement onClick
 
                 Intent post = new Intent(v.getContext(), PostPage.class);
-                post.putExtra("title", "Wow what a cool title");
-                post.putExtra("content", "Wow what a cool post");
+                post.putExtra("title", personViewHolder.personName.getText());
+                post.putExtra("content", personViewHolder.personAge.getText());
 
                 System.out.println("Clicked");
                 v.getContext().startActivity(post);
