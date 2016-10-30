@@ -17,28 +17,23 @@
         <activity
             android:name=".LoginScreen"
             android:label="@string/title_activity_login_screen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".NavDrawer"
             android:label="@string/title_activity_nav_drawer"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".RecyclerViewActivity"
+            android:name=".HomePage"
             android:label="Home"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".DevSearchPage"
-            android:label="@string/title_activity_dev_search_page"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <!--
- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
-        -->
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -46,6 +41,13 @@
         <activity
             android:name=".PostPage"
             android:label="@string/title_activity_post_page"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+        <activity
+            android:name=".MakePost"
+            android:label="Post a listing"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>

@@ -384,9 +384,8 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
             showProgress(false);
 
             if (success) {
-                //finish();
-                //Intent intent = new Intent(LoginScreen.this, DevSearchPage.class);
-                Intent intent = new Intent(LoginScreen.this, RecyclerViewActivity.class);
+                Intent intent = new Intent(LoginScreen.this, MakePost.class);
+                //Intent intent = new Intent(LoginScreen.this, HomePage.class);
                 startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

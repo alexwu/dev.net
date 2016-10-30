@@ -19,7 +19,7 @@ import java.util.List;
  * Created by jiaweihe on 10/23/16.
  */
 
-public class RecyclerViewActivity extends AppCompatActivity {
+public class HomePage extends AppCompatActivity {
 
     private List<Project> projects;
     private RecyclerView rv;
@@ -46,7 +46,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         toolbar.setTitle("Home");
         setSupportActionBar(toolbar);
-        //tb.setTitleTextColor(0xFFFFFF);
     }
     private void initializeData(){
         projects = new ArrayList<>();
