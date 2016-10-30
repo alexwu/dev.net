@@ -2,9 +2,11 @@ package cse110group4.devnet;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,10 +19,11 @@ import java.util.List;
  * Created by jiaweihe on 10/23/16.
  */
 
-public class RecyclerViewActivity extends Activity {
+public class RecyclerViewActivity extends AppCompatActivity {
 
     private List<Project> projects;
     private RecyclerView rv;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class RecyclerViewActivity extends Activity {
         setContentView(R.layout.recyclerview_activity);
 
         rv=(RecyclerView)findViewById(R.id.rv);
+        setupToolbar();
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
@@ -38,6 +42,12 @@ public class RecyclerViewActivity extends Activity {
         initializeAdapter();
     }
 
+    private void setupToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        toolbar.setTitle("Home");
+        setSupportActionBar(toolbar);
+        //tb.setTitleTextColor(0xFFFFFF);
+    }
     private void initializeData(){
         projects = new ArrayList<>();
         projects.add(new Project("UI for Delivery Service App", "Required Skills: Python"));

@@ -28,10 +28,6 @@
             android:label="@string/title_activity_nav_drawer"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".NavDrawerClient"
-            android:label="@string/title_activity_nav_drawer_client"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".RecyclerViewActivity"
             android:label="Home"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -50,7 +46,9 @@
         <activity
             android:name=".PostPage"
             android:label="@string/title_activity_post_page"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
