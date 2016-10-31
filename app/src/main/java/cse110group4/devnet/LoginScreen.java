@@ -56,7 +56,8 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
      * TODO: remove after connecting to a real authentication system.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world", "boss@dev.net:password"
+            "foo@example.com:hello", "bar@example.com:world", "boss@dev.net:password",
+            "client@dev.net:password", "dev@dev.net:password"
     };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -384,9 +385,15 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
             showProgress(false);
 
             if (success) {
-                Intent intent = new Intent(LoginScreen.this, MakePost.class);
-                //Intent intent = new Intent(LoginScreen.this, HomePage.class);
+                Intent intent = new Intent(LoginScreen.this, HomePage.class);
+                if (mEmail.equals("dev@dev.net")) {
+                    intent.putExtra("type", "Developer Home");
+                }
+                else {
+                    intent.putExtra("type", "Client Home");
+                }
                 startActivity(intent);
+
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

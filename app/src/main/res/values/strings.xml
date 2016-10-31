@@ -31,4 +31,8 @@
     <string name="title_activity_post_page"> Post Page</string>
     <string name="title_activity_make_post">MakePost</string>
 
+    <string name="drawer_open"></string>
+    <string name="drawer_close"></string>
+    <string name="action_favorite">Favorited!</string>
+    <string name="hamburger_button">Navigation Drawer</string>
 </resources>

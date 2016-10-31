@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    tools:showIn="@layout/app_bar_nav_drawer"
     tools:openDrawer="start">
 
     <include
@@ -22,9 +23,6 @@
         app:headerLayout="@layout/nav_header_nav_drawer"
         app:menu="@menu/activity_nav_drawer_drawer" >
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

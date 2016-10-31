@@ -16,11 +16,13 @@ import android.view.MenuItem;
 public class NavDrawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_drawer);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -82,11 +84,16 @@ public class NavDrawer extends AppCompatActivity
 
         if (id == R.id.firstDrawerButton) {
             // Handle the camera action
+            toolbar.setTitle("My Profile");
+
         } else if (id == R.id.seconDrawerButton) {
+            toolbar.setTitle("Projects");
 
         } else if (id == R.id.thirdDrawerButton) {
+            toolbar.setTitle("Favorites");
 
         } else if (id == R.id.fourthDrawerButton) {
+            toolbar.setTitle("Settings");
 
         } else if (id == R.id.nav_share) {
 

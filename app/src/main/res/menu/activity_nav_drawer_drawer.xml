@@ -5,15 +5,15 @@
         <item
             android:id="@+id/firstDrawerButton"
             android:icon="@drawable/ic_menu_camera"
-            android:title="My Projects" />
+            android:title="Profile" />
         <item
             android:id="@+id/seconDrawerButton"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Find a Project" />
+            android:title="Projects" />
         <item
             android:id="@+id/thirdDrawerButton"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Messages" />
+            android:title="Favorites" />
         <item
             android:id="@+id/fourthDrawerButton"
             android:icon="@drawable/ic_menu_manage"

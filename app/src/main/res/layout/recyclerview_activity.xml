@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/relativeHome"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
@@ -13,6 +15,7 @@
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
     </android.support.v7.widget.Toolbar>
+    <include layout="@layout/content_nav_drawer" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
@@ -23,12 +26,20 @@
 
         <android.support.v7.widget.RecyclerView
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:id="@+id/rv"
             android:layout_gravity="top"
             android:layout_below="@id/my_toolbar">
         </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/homeFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_alignBottom="@id/homeSwipeLayout"
+        android:layout_alignRight="@id/homeSwipeLayout"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </RelativeLayout>

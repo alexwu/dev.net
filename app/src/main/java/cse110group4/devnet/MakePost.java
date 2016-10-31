@@ -1,5 +1,6 @@
 package cse110group4.devnet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,12 +15,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import android.content.Context;
 
+import java.util.ArrayList;
+
 public class MakePost extends AppCompatActivity {
     // Use to get text field values
     String[] devpost = new String[3];
     public void returnString(String stuff, int index){
         devpost[index] = stuff;
     }
+    private EditText editTitle;
+    private EditText editSkills;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,17 +33,10 @@ public class MakePost extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
 
-        EditText editTitle = (EditText)findViewById(R.id.project_title);
+
+        editTitle = (EditText)findViewById(R.id.project_title);
         editTitle.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -64,7 +62,7 @@ public class MakePost extends AppCompatActivity {
 
         });
 
-        EditText editSkills = (EditText)findViewById(R.id.skills_needed);
+        editSkills = (EditText)findViewById(R.id.skills_needed);
         editSkills.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -115,6 +113,21 @@ public class MakePost extends AppCompatActivity {
                 return handled;
             }
 
+        });
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent nextActivity = new Intent(getApplicationContext(), HomePage.class);
+                ArrayList<String> post = new ArrayList<String>();
+                post.add(0, editTitle.getText().toString());
+                post.add(1, editSkills.getText().toString());
+
+                nextActivity.putExtra("type", "Client Home");
+                nextActivity.putExtra("post", post);
+                startActivity(nextActivity);
+            }
         });
     }
 
