@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
@@ -30,9 +31,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
         }
     }
 
-    List<Project> projects;
+    ArrayList<Project> projects;
 
-    RVAdapter(List<Project> projects){
+    RVAdapter(ArrayList<Project> projects){
         this.projects = projects;
     }
 

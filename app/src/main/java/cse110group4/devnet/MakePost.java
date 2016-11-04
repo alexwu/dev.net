@@ -119,7 +119,7 @@ public class MakePost extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent nextActivity = new Intent(getApplicationContext(), HomePage.class);
+                Intent nextActivity = new Intent(getApplicationContext(), HomeWithDrawer.class);
                 ArrayList<String> post = new ArrayList<String>();
                 post.add(0, editTitle.getText().toString());
                 post.add(1, editSkills.getText().toString());

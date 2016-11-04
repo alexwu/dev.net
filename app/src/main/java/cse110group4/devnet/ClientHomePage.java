@@ -27,29 +27,19 @@ public class ClientHomePage extends AppCompatActivity {
         setContentView(R.layout.recyclerview_activity);
 
         rv=(RecyclerView)findViewById(R.id.rv);
-            setupToolbar();
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         rv.setHasFixedSize(true);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.homeFab);
+       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.homeFab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
-        //initializeAdapter();
+        //initializeAdapter(); */
     }
 
-        private void setupToolbar() {
-            toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-            toolbar.setTitle("Client Home");
-            setSupportActionBar(toolbar);
-        }
-    private void initializeAdapter(ArrayList data){
-        RVAdapter adapter = new RVAdapter(data);
-        rv.setAdapter(adapter);
-    }
 }

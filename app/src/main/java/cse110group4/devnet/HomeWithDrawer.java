@@ -13,16 +13,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class NavDrawer extends AppCompatActivity
+public class HomeWithDrawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nav_drawer);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.activity_home_with_drawer);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -42,6 +40,26 @@ public class NavDrawer extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        if (findViewById(R.id.home_frame) != null) {
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
+            }
+
+            // Create a new Fragment to be placed in the activity layout
+            PostListFragment firstFragment = new PostListFragment();
+
+            // In case this activity was started with special instructions from an
+            // Intent, pass the Intent's extras to the fragment as arguments
+            firstFragment.setArguments(getIntent().getExtras());
+
+            // Add the fragment to the 'fragment_container' FrameLayout
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.home_frame, firstFragment).commit();
+        }
     }
 
     @Override
@@ -57,7 +75,7 @@ public class NavDrawer extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.nav_drawer, menu);
+        getMenuInflater().inflate(R.menu.home_with_drawer, menu);
         return true;
     }
 
@@ -82,18 +100,13 @@ public class NavDrawer extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.firstDrawerButton) {
+        if (id == R.id.nav_camera) {
             // Handle the camera action
-            toolbar.setTitle("My Profile");
+        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.seconDrawerButton) {
-            toolbar.setTitle("Projects");
+        } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.thirdDrawerButton) {
-            toolbar.setTitle("Favorites");
-
-        } else if (id == R.id.fourthDrawerButton) {
-            toolbar.setTitle("Settings");
+        } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
 

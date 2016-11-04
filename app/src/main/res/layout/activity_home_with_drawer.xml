@@ -6,23 +6,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:showIn="@layout/app_bar_nav_drawer"
     tools:openDrawer="start">
 
-    <include
-        layout="@layout/app_bar_nav_drawer"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content">
 
+        <include
+            layout="@layout/app_bar_home_with_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/app_bar_drawer" />
+
+        <FrameLayout
+            android:id="@+id/home_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_nav_drawer"
-        app:menu="@menu/activity_nav_drawer_drawer" >
-
-    </android.support.design.widget.NavigationView>
+        app:headerLayout="@layout/nav_header_home_with_drawer"
+        app:menu="@menu/activity_home_with_drawer_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

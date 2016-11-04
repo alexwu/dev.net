@@ -385,7 +385,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
             showProgress(false);
 
             if (success) {
-                Intent intent = new Intent(LoginScreen.this, HomePage.class);
+                Intent intent = new Intent(LoginScreen.this, HomeWithDrawer.class);
                 if (mEmail.equals("dev@dev.net")) {
                     intent.putExtra("type", "Developer Home");
                 }
