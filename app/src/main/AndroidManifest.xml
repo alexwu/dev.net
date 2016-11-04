@@ -17,11 +17,7 @@
         <activity
             android:name=".LoginScreen"
             android:label="@string/title_activity_login_screen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".HomePage"
@@ -43,7 +39,13 @@
         <activity
             android:name=".HomeWithDrawer"
             android:label="@string/title_activity_home_with_drawer"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
