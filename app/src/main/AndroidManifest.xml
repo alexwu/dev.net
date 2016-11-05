@@ -16,13 +16,11 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginScreen"
-            android:label="@string/title_activity_login_screen">
-
-        </activity>
+            android:label="@string/title_activity_login_screen"></activity>
         <activity
             android:name=".HomePage"
             android:label="Home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -31,11 +29,11 @@
         <activity
             android:name=".PostPage"
             android:label="@string/title_activity_post_page"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MakePost"
             android:label="Post a listing"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".HomeWithDrawer"
             android:label="@string/title_activity_home_with_drawer"
@@ -46,6 +44,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RequestProject"
+            android:label="Requesting Project"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

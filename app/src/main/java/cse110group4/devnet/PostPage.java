@@ -21,6 +21,7 @@ public class PostPage extends AppCompatActivity {
     Intent intent;
     TextView post_content;
     Toolbar toolbar;
+    String key = "recipientEmail";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,16 @@ public class PostPage extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent request = new Intent(getApplicationContext(), RequestProject.class);
+                //TODO: need to get email address instead of whatever is in content
+                String recipientEmail = intent.getStringExtra("content");
+
+                Bundle bundle = new Bundle();
+
+                bundle.putString(key, recipientEmail);
+
+                request.putExtras(bundle);
+                startActivity(request);
             }
         });
 
