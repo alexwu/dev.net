@@ -1,9 +1,13 @@
 package cse110group4.devnet;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -15,18 +19,42 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInApi;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class HomeWithDrawer extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
+    private GoogleApiClient mGoogleApiClient;
+
+    // Request code to use when launching the resolution activity
+    private static final int REQUEST_RESOLVE_ERROR = 1001;
+    // Unique tag for the error dialog fragment
+    private static final String DIALOG_ERROR = "dialog_error";
+    // Bool to track whether the app is already resolving an error
+    private boolean mResolvingError = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Create a GoogleApiClient instance
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */,
+                        this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -82,6 +110,75 @@ public class HomeWithDrawer extends AppCompatActivity
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.home_frame, firstFragment).commit();
+        }
+    }
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+
+        if (mResolvingError) {
+            // Already attempting to resolve an error.
+            return;
+        } else if (result.hasResolution()) {
+            try {
+                mResolvingError = true;
+                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                // There was an error with the resolution intent. Try again.
+                mGoogleApiClient.connect();
+            }
+        } else {
+            // Show dialog using GoogleApiAvailability.getErrorDialog()
+            showErrorDialog(result.getErrorCode());
+            mResolvingError = true;
+        }
+
+    }
+    /* Creates a dialog for an error message */
+    private void showErrorDialog(int errorCode) {
+        // Create a fragment for the error dialog
+        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
+        // Pass the error that should be displayed
+        Bundle args = new Bundle();
+        args.putInt(DIALOG_ERROR, errorCode);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getSupportFragmentManager(), "errordialog");
+        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
+
+    }
+
+    /* Called from ErrorDialogFragment when the dialog is dismissed. */
+    public void onDialogDismissed() {
+        mResolvingError = false;
+    }
+
+    /* A fragment to display an error dialog */
+    public static class ErrorDialogFragment extends DialogFragment {
+        public ErrorDialogFragment() { }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Get the error code and retrieve the appropriate dialog
+            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
+            return GoogleApiAvailability.getInstance().getErrorDialog(
+                    this.getActivity(), errorCode, REQUEST_RESOLVE_ERROR);
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            ((LoginScreen) getActivity()).onDialogDismissed();
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_RESOLVE_ERROR) {
+            mResolvingError = false;
+            if (resultCode == RESULT_OK) {
+                // Make sure the app is not already connected or attempting to connect
+                if (!mGoogleApiClient.isConnecting() &&
+                        !mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.connect();
+                }
+            }
         }
     }
     @Override

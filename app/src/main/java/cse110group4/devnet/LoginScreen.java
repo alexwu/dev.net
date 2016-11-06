@@ -4,9 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -36,6 +40,8 @@ import android.widget.Toast;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -50,7 +56,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cursor>, GoogleApiClient.OnConnectionFailedListener {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -68,7 +74,6 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -81,6 +86,13 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
      */
     private GoogleApiClient client;
     private FirebaseAuth mAuth;
+    // Request code to use when launching the resolution activity
+    private static final int REQUEST_RESOLVE_ERROR = 1001;
+    // Unique tag for the error dialog fragment
+    private static final String DIALOG_ERROR = "dialog_error";
+    // Bool to track whether the app is already resolving an error
+    private boolean mResolvingError = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,9 +129,66 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
         mProgressView = findViewById(R.id.login_progress);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        /*client = new GoogleApiClient.Builder(this)
+       //         .enableAutoManage(this ,
+       //         this )
+        //        .addApi(AppIndex.API)
+        //        .build();
+*/
+    }
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        if (mResolvingError) {
+            // Already attempting to resolve an error.
+            return;
+        } else if (result.hasResolution()) {
+            try {
+                mResolvingError = true;
+                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                // There was an error with the resolution intent. Try again.
+                client.connect();
+            }
+        } else {
+            // Show dialog using GoogleApiAvailability.getErrorDialog()
+            showErrorDialog(result.getErrorCode());
+            mResolvingError = true;
+        }
+
+    }
+    /* Creates a dialog for an error message */
+    private void showErrorDialog(int errorCode) {
+        // Create a fragment for the error dialog
+        HomeWithDrawer.ErrorDialogFragment dialogFragment = new HomeWithDrawer.ErrorDialogFragment();
+        // Pass the error that should be displayed
+        Bundle args = new Bundle();
+        args.putInt(DIALOG_ERROR, errorCode);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getSupportFragmentManager(), "errordialog");
     }
 
+    /* Called from ErrorDialogFragment when the dialog is dismissed. */
+    public void onDialogDismissed() {
+        mResolvingError = false;
+    }
+
+    /* A fragment to display an error dialog */
+    public static class ErrorDialogFragment extends DialogFragment {
+        public ErrorDialogFragment() { }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Get the error code and retrieve the appropriate dialog
+            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
+            return GoogleApiAvailability.getInstance().getErrorDialog(
+                    this.getActivity(), errorCode, REQUEST_RESOLVE_ERROR);
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            ((HomeWithDrawer) getActivity()).onDialogDismissed();
+        }
+    }
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -170,10 +239,10 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
+    /*    if (mAuthTask != null) {
             return;
         }
-
+*/
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -222,14 +291,15 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                     // signed in user can be handled in the listener.
                     if (!task.isSuccessful()) {
                         Log.w("TEST", "signInWithEmail:failed", task.getException());
+                        showProgress(false);
+                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                        mPasswordView.requestFocus();
                         return;
                     }
                     Intent login = new Intent(getApplicationContext(), HomeWithDrawer.class);
                     startActivity(login);
                 }
             });
-           /* mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null); */
         }
     }
 
@@ -344,8 +414,13 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+//        client.connect();
+ //       AppIndex.AppIndexApi.start(client, getIndexApiAction());
+        int result = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext());
+        if (result != 0) {
+            GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
+
+        }
     }
 
     @Override
@@ -354,8 +429,8 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
+    //    AppIndex.AppIndexApi.end(client, getIndexApiAction());
+   //     client.disconnect();
     }
 
 
@@ -367,88 +442,6 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-/*
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            } */
-/*
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            } */
-
-            mAuth.signInWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d("TEST", "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            if (!task.isSuccessful()) {
-                                Log.w("TEST", "signInWithEmail:failed", task.getException());
-                                return;
-                            }
-                            Intent login = new Intent(getApplicationContext(), HomeWithDrawer.class);
-                            startActivity(login);
-                        }
-                    });
-
-            // TODO: register the new account here.
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                Intent intent = new Intent(LoginScreen.this, HomeWithDrawer.class);
-                if (mEmail.equals("dev@dev.net")) {
-                    intent.putExtra("type", "Developer Home");
-                }
-                else {
-                    intent.putExtra("type", "Client Home");
-                }
-                startActivity(intent);
-
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
     }
 }
 
