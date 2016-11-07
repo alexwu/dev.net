@@ -100,7 +100,6 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
         mAuth = FirebaseAuth.getInstance();
 
-
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();

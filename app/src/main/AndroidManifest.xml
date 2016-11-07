@@ -16,9 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginScreen"
-            android:label="@string/title_activity_login_screen">
-
-        </activity>
+            android:label="@string/title_activity_login_screen"></activity>
         <activity
             android:name=".HomePage"
             android:label="Home"
@@ -39,12 +37,13 @@
         <activity
             android:name=".HomeWithDrawer"
             android:label="@string/title_activity_home_with_drawer"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RequestProject"
             android:label="Requesting Project"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SignUpScreen"
+        <activity
+            android:name=".SignUpScreen"
             android:label="Sign Up"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -53,6 +52,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MakeUser"></activity>
     </application>
 
 </manifest>

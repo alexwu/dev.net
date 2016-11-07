@@ -29,6 +29,7 @@
         android:layout_marginBottom="16dp"
         android:id="@+id/button2" />
     <TextView
+        android:id="@+id/clickableText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button2"

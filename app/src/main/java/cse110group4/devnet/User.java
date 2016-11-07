@@ -10,7 +10,7 @@ public class User {
 
     private String email;
     private String password;
-    private String name;
+    private String username;
     private boolean isDeveloper;
     private boolean isClient;
     private ArrayList<Project> projects = new ArrayList<Project>();
@@ -18,10 +18,10 @@ public class User {
 
     public User() {}
 
-    public User(String email, String password, String name, boolean isDev, boolean isClient) {
+    public User(String email, String password, String username, boolean isDev, boolean isClient) {
         this.email = email;
         this.password = password;
-        this.name = name;
+        this.username = username;
         this.isDeveloper = isDev;
         this.isClient = isClient;
     }
@@ -39,7 +39,7 @@ public class User {
     }
 
     public String getName() {
-        return name;
+        return username;
     }
 
     public ArrayList<Post> getPosts() {
