@@ -31,9 +31,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
         }
     }
 
-    ArrayList<Project> projects;
+    ArrayList<Post> projects;
 
-    RVAdapter(ArrayList<Project> projects){
+    RVAdapter(ArrayList<Post> projects){
         this.projects = projects;
     }
 
@@ -51,18 +51,17 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
 
     @Override
     public void onBindViewHolder(final PersonViewHolder personViewHolder, int i) {
-        personViewHolder.personName.setText(projects.get(i).name);
-        personViewHolder.personAge.setText(projects.get(i).age);
-        personViewHolder.personPhoto.setImageResource(projects.get(i).photoId);
-
+        personViewHolder.personName.setText(projects.get(i).getTitle());
+        personViewHolder.personAge.setText(projects.get(i).getDescription());
+        final int iteration = i;
         personViewHolder.cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //implement onClick
 
                 Intent post = new Intent(v.getContext(), PostPage.class);
-                post.putExtra("title", personViewHolder.personName.getText());
-                post.putExtra("content", personViewHolder.personAge.getText());
+                post.putExtra("title", projects.get(iteration).getTitle());
+                post.putExtra("content", projects.get(iteration).getBody());
 
                 System.out.println("Clicked");
                 v.getContext().startActivity(post);

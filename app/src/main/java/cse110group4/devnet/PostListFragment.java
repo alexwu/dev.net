@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -30,6 +31,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,15 +61,37 @@ public class PostListFragment extends Fragment {
     protected RecyclerView rv;
     protected RVAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected ArrayList<Project> mDataset = new ArrayList<Project>();
+    protected ArrayList<Post> mDataset = new ArrayList<Post>();
 
+    private DatabaseReference mDatabase;
+    private SwipeRefreshLayout refreshLayout;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                for (DataSnapshot post : dataSnapshot.getChildren()) {
+                    Post nextPost = post.getValue(Post.class);
+                    mDataset.add(nextPost);
+                }
 
+                refreshLayout.setRefreshing(false);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+        mDatabase.child("posts").addValueEventListener(postListener);
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
-        mDataset.add(new Project("WE ALL ARE AWESOME", "FUCK THIS"));
     }
 
     @Override
@@ -73,6 +102,8 @@ public class PostListFragment extends Fragment {
         rootView.setTag(TAG);
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         rv = (RecyclerView) rootView.findViewById(R.id.rv);
+        refreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.homeSwipeLayout);
+        refreshLayout.setRefreshing(true);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
 

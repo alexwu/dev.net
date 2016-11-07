@@ -27,6 +27,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MakePost extends AppCompatActivity {
     // Use to get text field values
@@ -102,7 +104,7 @@ public class MakePost extends AppCompatActivity {
 
         });
 
-        EditText editDescription = (EditText)findViewById(R.id.description);
+        final EditText editDescription = (EditText)findViewById(R.id.description);
         editDescription.setHorizontallyScrolling(false);
         editDescription.setMaxLines(6);
         editDescription.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -134,21 +136,16 @@ public class MakePost extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String key = mDatabase.child("posts").push().getKey();
+                Post post = new Post(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString(), mUser.getUid());
+                Map<String, Object> postValues = post.toMap();
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/posts/" + key, postValues);
 
-                System.out.println("CLICKED");
-                Post post = new Post(editTitle.getText().toString(), editSkills.getText().toString(), mUser.getUid());
-                System.out.println(post);
-                mDatabase.child("posts").child(Integer.toString(post.getPostId())).setValue(post, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
-                        if (databaseError != null) {
-                            Log.e("TEST", "Failed to write message", databaseError.toException());
-                        }
-                        else {
-                            Log.e("TEST", "I knew you well");
-                        }
-                    }
-                });
+                mDatabase.updateChildren(childUpdates);
+
+                startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
+
             }
         });
     }

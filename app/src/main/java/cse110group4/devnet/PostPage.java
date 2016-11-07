@@ -47,7 +47,9 @@ public class PostPage extends AppCompatActivity {
         });
 
         intent = getIntent();
-        this.setTitle(intent.getStringExtra("title"));
+        this.setTitle("Fucking Title");
+
+        //toolbar = (Toolbar) findViewById(R.id.toolbar);
         post_content = (TextView) findViewById(R.id.post_contents);
         post_content.setText(intent.getStringExtra("content"));
     }
@@ -55,14 +57,7 @@ public class PostPage extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-                return true;
 
-            case R.id.action_favorite:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                return true;
 
             default:
                 // If we got here, the user's action was not recognized.
@@ -75,8 +70,9 @@ public class PostPage extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        this.setTitle("Fucking Title");
+
         setSupportActionBar(toolbar);
-        //getMenuInflater().inflate(R.menu.menu_post_page, menu);
         return true;
     }
 }
