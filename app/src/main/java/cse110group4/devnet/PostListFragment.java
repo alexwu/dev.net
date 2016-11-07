@@ -71,7 +71,7 @@ public class PostListFragment extends Fragment {
     {
         View rootView = inflater.inflate(R.layout.recyclerview_activity, container, false);
         rootView.setTag(TAG);
-
+        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         rv = (RecyclerView) rootView.findViewById(R.id.rv);
 
         mLayoutManager = new LinearLayoutManager(getActivity());

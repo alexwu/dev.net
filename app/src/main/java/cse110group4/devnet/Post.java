@@ -10,18 +10,51 @@ import java.util.Map;
 public class Post {
     private String title;
     private String body;
-    private int id;
-    private User author;
+    private String userId;
     private int starCount;
     public Map<String, Boolean> stars = new HashMap<>();
+    private static int postId = 0;
 
     public Post() {}
 
-    public Post(String title, String body, User author, int id) {
+    public Post(String title, String body, String userId) {
 
         this.title = title;
         this.body = body;
-        this.author = author;
-        this.id = id;
+        this.userId = userId;
+        this.postId = postId + 1;
     }
+
+    public static int getPostId() {
+        return postId;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public int getStarCount() {
+        return starCount;
+    }
+
+    public Map<String, Boolean> getStars() {
+        return stars;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setStars(Map<String, Boolean> stars) {
+        this.stars = stars;
+    }
+
+    public void setStarCount(int starCount) {
+        this.starCount = starCount;
+    }
+
 }

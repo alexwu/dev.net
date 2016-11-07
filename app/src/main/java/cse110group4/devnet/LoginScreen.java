@@ -47,6 +47,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +90,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
      */
     private GoogleApiClient client;
     private FirebaseAuth mAuth;
+    private FirebaseDatabase mDatabase;
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
     // Unique tag for the error dialog fragment
@@ -99,7 +104,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
         setContentView(R.layout.activity_login_screen);
 
         mAuth = FirebaseAuth.getInstance();
-
+        mDatabase = FirebaseDatabase.getInstance();
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -295,7 +300,26 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                         mPasswordView.requestFocus();
                         return;
                     }
-                    Intent login = new Intent(getApplicationContext(), HomeWithDrawer.class);
+                    final Intent login = new Intent(getApplicationContext(), HomeWithDrawer.class);
+                    //final String userId = mAuth.getCurrentUser().getUid();
+                  /*  mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.child(userId).getValue(User.class).isClient()) {
+                                login.putExtra("type", "Client Home");
+                            }
+                            else {
+                                login.putExtra("type", "Developer Home");
+                            }
+                            startActivity(login);
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.w("TEST", "loadPost:onCancelled", databaseError.toException());
+                        }
+                    }); */
                     startActivity(login);
                 }
             });

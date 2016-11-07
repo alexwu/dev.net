@@ -2,10 +2,12 @@ package cse110group4.devnet;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,6 +16,15 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import android.content.Context;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -25,6 +36,9 @@ public class MakePost extends AppCompatActivity {
     }
     private EditText editTitle;
     private EditText editSkills;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +47,9 @@ public class MakePost extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
 
         editTitle = (EditText)findViewById(R.id.project_title);
         editTitle.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -115,18 +130,25 @@ public class MakePost extends AppCompatActivity {
 
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.makePostFab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent nextActivity = new Intent(getApplicationContext(), HomeWithDrawer.class);
-                ArrayList<String> post = new ArrayList<String>();
-                post.add(0, editTitle.getText().toString());
-                post.add(1, editSkills.getText().toString());
 
-                nextActivity.putExtra("type", "Client Home");
-                nextActivity.putExtra("post", post);
-                startActivity(nextActivity);
+                System.out.println("CLICKED");
+                Post post = new Post(editTitle.getText().toString(), editSkills.getText().toString(), mUser.getUid());
+                System.out.println(post);
+                mDatabase.child("posts").child(Integer.toString(post.getPostId())).setValue(post, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
+                        if (databaseError != null) {
+                            Log.e("TEST", "Failed to write message", databaseError.toException());
+                        }
+                        else {
+                            Log.e("TEST", "I knew you well");
+                        }
+                    }
+                });
             }
         });
     }
