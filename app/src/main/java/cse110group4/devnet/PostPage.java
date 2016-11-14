@@ -2,6 +2,7 @@ package cse110group4.devnet;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,8 @@ public class PostPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_page);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -47,32 +50,9 @@ public class PostPage extends AppCompatActivity {
         });
 
         intent = getIntent();
-        this.setTitle("Fucking Title");
-
-        //toolbar = (Toolbar) findViewById(R.id.toolbar);
+        this.setTitle(intent.getStringExtra("title"));
         post_content = (TextView) findViewById(R.id.post_contents);
         post_content.setText(intent.getStringExtra("content"));
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        this.setTitle("Fucking Title");
-
-        setSupportActionBar(toolbar);
-        return true;
-    }
 }

@@ -1,6 +1,13 @@
 package cse110group4.devnet;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by jamesbombeelu on 11/6/16.
@@ -13,8 +20,8 @@ public class User {
     private String username;
     private boolean isDeveloper;
     private boolean isClient;
-    private ArrayList<Project> projects = new ArrayList<Project>();
-    private ArrayList<Post> posts = new ArrayList<Post>();
+    //private ArrayList<Project> projects = new ArrayList<Project>();
+    private Map<String, Post> posts = new HashMap<String, Post>();
 
     public User() {}
 
@@ -24,6 +31,14 @@ public class User {
         this.username = username;
         this.isDeveloper = isDev;
         this.isClient = isClient;
+    }
+
+    public void setClient(boolean client) {
+        isClient = client;
+    }
+
+    public void setDeveloper(boolean developer) {
+        isDeveloper = developer;
     }
 
     public boolean isClient() {
@@ -42,15 +57,24 @@ public class User {
         return username;
     }
 
-    public ArrayList<Post> getPosts() {
+    public Map<String, Post> getPosts() {
         return posts;
     }
 
-    public ArrayList<Project> getProjects() {
-        return projects;
+    public void setPosts(Map<String, Post> posts) {
+        this.posts = posts;
     }
+
+    // public ArrayList<Project> getProjects() {
+     //   return projects;
+    //}
 
     public String getPassword() {
         return password;
     }
+
+    public void addPost(String title, String skills, String body, String key) {
+        posts.put(key, new Post(title, skills, body, FirebaseAuth.getInstance().getCurrentUser().getUid()));
+    }
+
 }

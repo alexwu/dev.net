@@ -140,9 +140,12 @@ public class MakePost extends AppCompatActivity {
                 Post post = new Post(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString(), mUser.getUid());
                 Map<String, Object> postValues = post.toMap();
                 Map<String, Object> childUpdates = new HashMap<>();
+                Map<String, Object> userUpdates = new HashMap<>();
                 childUpdates.put("/posts/" + key, postValues);
+                userUpdates.put("/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/posts/" + key, postValues);
 
                 mDatabase.updateChildren(childUpdates);
+                mDatabase.updateChildren(userUpdates);
 
                 startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
 

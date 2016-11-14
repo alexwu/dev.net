@@ -32,6 +32,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +42,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by jiaweihe on 10/23/16.
@@ -64,15 +68,23 @@ public class PostListFragment extends Fragment {
     protected ArrayList<Post> mDataset = new ArrayList<Post>();
 
     private DatabaseReference mDatabase;
+    private FirebaseUser mUser;
     private SwipeRefreshLayout refreshLayout;
+
+    private ValueEventListener postListener;
+    private ValueEventListener userPostListener;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        ValueEventListener postListener = new ValueEventListener() {
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
+
                 for (DataSnapshot post : dataSnapshot.getChildren()) {
                     Post nextPost = post.getValue(Post.class);
                     mDataset.add(nextPost);
@@ -89,7 +101,37 @@ public class PostListFragment extends Fragment {
                 // ...
             }
         };
-        mDatabase.child("posts").addValueEventListener(postListener);
+
+        userPostListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+
+                User currentUser = dataSnapshot.child(mUser.getUid()).getValue(User.class);
+                System.out.println("IS THIS FUCKER A CLIENT?" + currentUser.isClient());
+                System.out.println("IS THIS FUCKER A DEV?" + currentUser.isDeveloper());
+                System.out.println("WELL WHO AM I" + currentUser.getEmail());
+                System.out.println("USER OBJECT" + currentUser);
+                if (currentUser.isClient()) {
+                    //for (DataSnapshot post : dataSnapshot.child(mUser.getUid()).child("posts").getChildren()) {
+                     for (Map.Entry<String, Post> post : currentUser.getPosts().entrySet()) {
+                        Post nextPost = post.getValue();
+                        mDataset.add(nextPost);
+                    }
+                }
+                else {
+                    mDatabase.child("posts").addValueEventListener(postListener);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+        mDatabase.child("users").addValueEventListener(userPostListener);
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
     }
