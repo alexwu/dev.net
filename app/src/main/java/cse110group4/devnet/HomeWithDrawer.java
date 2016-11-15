@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInApi;
@@ -25,12 +26,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 public class HomeWithDrawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
@@ -41,6 +46,10 @@ public class HomeWithDrawer extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private User user;
     private Toolbar mToolbar;
+    private ValueEventListener userPostListener;
+    private DatabaseReference mReference;
+    private TextView nameHeader;
+    private TextView emailHeader;
 
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
@@ -80,11 +89,37 @@ public class HomeWithDrawer extends AppCompatActivity
         };
         mUser = mAuth.getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance();
+        mReference = mDatabase.getReference();
 
         setContentView(R.layout.activity_home_with_drawer);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
+
+        userPostListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+
+                nameHeader = (TextView) findViewById(R.id.nameHeader);
+                emailHeader = (TextView) findViewById(R.id.emailHeader);
+
+                user = dataSnapshot.child(mUser.getUid()).getValue(User.class);
+
+                System.out.println(user.getName());
+                //nameHeader.setText(user.getName());
+                nameHeader.setText("I'm a fucking user");
+
+                emailHeader.setText(user.getEmail());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                // ...
+            }
+        };
+        mReference.child("users").addListenerForSingleValueEvent(userPostListener);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

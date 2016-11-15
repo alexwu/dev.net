@@ -108,16 +108,14 @@ public class PostListFragment extends Fragment {
                 // Get Post object and use the values to update the UI
 
                 User currentUser = dataSnapshot.child(mUser.getUid()).getValue(User.class);
-                System.out.println("IS THIS FUCKER A CLIENT?" + currentUser.isClient());
-                System.out.println("IS THIS FUCKER A DEV?" + currentUser.isDeveloper());
-                System.out.println("WELL WHO AM I" + currentUser.getEmail());
-                System.out.println("USER OBJECT" + currentUser);
+
                 if (currentUser.isClient()) {
-                    //for (DataSnapshot post : dataSnapshot.child(mUser.getUid()).child("posts").getChildren()) {
+                    System.out.println(currentUser.getPosts());
                      for (Map.Entry<String, Post> post : currentUser.getPosts().entrySet()) {
                         Post nextPost = post.getValue();
                         mDataset.add(nextPost);
                     }
+                    refreshLayout.setRefreshing(false);
                 }
                 else {
                     mDatabase.child("posts").addValueEventListener(postListener);
