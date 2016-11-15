@@ -57,6 +57,10 @@ public class User {
         return username;
     }
 
+    public void setName(String username) {
+        this.username = username;
+    }
+
     public Map<String, Post> getPosts() {
         return posts;
     }
@@ -64,10 +68,6 @@ public class User {
     public void setPosts(Map<String, Post> posts) {
         this.posts = posts;
     }
-
-    // public ArrayList<Project> getProjects() {
-     //   return projects;
-    //}
 
     public String getPassword() {
         return password;

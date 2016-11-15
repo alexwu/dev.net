@@ -106,7 +106,7 @@ public class MakePost extends AppCompatActivity {
 
         final EditText editDescription = (EditText)findViewById(R.id.description);
         editDescription.setHorizontallyScrolling(false);
-        editDescription.setMaxLines(6);
+        editDescription.setMaxLines(10);
         editDescription.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
