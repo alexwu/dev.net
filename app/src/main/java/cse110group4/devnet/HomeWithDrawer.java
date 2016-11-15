@@ -106,9 +106,9 @@ public class HomeWithDrawer extends AppCompatActivity
 
                 user = dataSnapshot.child(mUser.getUid()).getValue(User.class);
 
-                System.out.println(user.getName());
-                //nameHeader.setText(user.getName());
-                nameHeader.setText("I'm a fucking user");
+                //System.out.println(user.getName());
+                nameHeader.setText(user.getName());
+                //nameHeader.setText("I'm a fucking user");
 
                 emailHeader.setText(user.getEmail());
             }

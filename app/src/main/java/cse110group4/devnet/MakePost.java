@@ -38,6 +38,7 @@ public class MakePost extends AppCompatActivity {
     }
     private EditText editTitle;
     private EditText editSkills;
+    private EditText editDescription;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -104,7 +105,7 @@ public class MakePost extends AppCompatActivity {
 
         });
 
-        final EditText editDescription = (EditText)findViewById(R.id.description);
+        editDescription = (EditText)findViewById(R.id.description);
         editDescription.setHorizontallyScrolling(false);
         editDescription.setMaxLines(10);
         editDescription.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -137,6 +138,7 @@ public class MakePost extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String key = mDatabase.child("posts").push().getKey();
+                System.out.println("Make Post Description: " + editDescription.getText().toString());
                 Post post = new Post(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString(), mUser.getUid());
                 Map<String, Object> postValues = post.toMap();
                 Map<String, Object> childUpdates = new HashMap<>();

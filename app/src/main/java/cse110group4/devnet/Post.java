@@ -36,6 +36,11 @@ public class Post {
     public String getDescription() {
         return description;
     }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getBody() {
         return body;
     }
@@ -76,9 +81,11 @@ public class Post {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("title", title);
+        result.put("description", description);
         result.put("body", body);
         result.put("starCount", starCount);
         result.put("stars", stars);
+        result.put("userId", userId);
 
         return result;
     }
