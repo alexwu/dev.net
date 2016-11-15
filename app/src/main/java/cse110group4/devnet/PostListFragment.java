@@ -130,6 +130,7 @@ public class PostListFragment extends Fragment {
             }
         };
         mDatabase.child("users").addValueEventListener(userPostListener);
+
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
     }
@@ -143,6 +144,18 @@ public class PostListFragment extends Fragment {
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         rv = (RecyclerView) rootView.findViewById(R.id.rv);
         refreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.homeSwipeLayout);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                for (int i = 0; i < mDataset.size(); i++) {
+                    mDataset.remove(i);
+                }
+                mDatabase.child("users").addListenerForSingleValueEvent(userPostListener);
+                refreshLayout.setRefreshing(false);
+            }
+        });
+
         refreshLayout.setRefreshing(true);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
