@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,8 +21,9 @@ public class User {
     private String username;
     private boolean isDeveloper;
     private boolean isClient;
-    //private ArrayList<Project> projects = new ArrayList<Project>();
+    private List<Project> projects = new ArrayList<Project>();
     private Map<String, Post> posts = new HashMap<String, Post>();
+    private Map<String, String> favorites = new HashMap<String, String>();
 
     public User() {}
 
@@ -71,6 +73,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public Map<String, String> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(Map<String, String> favorites) {
+        this.favorites = favorites;
     }
 
     public void addPost(String title, String skills, String body, String key) {

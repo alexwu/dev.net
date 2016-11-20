@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -137,22 +138,33 @@ public class MakePost extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String key = mDatabase.child("posts").push().getKey();
-                System.out.println("Make Post Description: " + editDescription.getText().toString());
-                Post post = new Post(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString(), mUser.getUid());
-                Map<String, Object> postValues = post.toMap();
-                Map<String, Object> childUpdates = new HashMap<>();
-                Map<String, Object> userUpdates = new HashMap<>();
-                childUpdates.put("/posts/" + key, postValues);
-                userUpdates.put("/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/posts/" + key, postValues);
 
-                mDatabase.updateChildren(childUpdates);
-                mDatabase.updateChildren(userUpdates);
+                if (isValidPost(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString())) {
+                    String key = mDatabase.child("posts").push().getKey();
+                    System.out.println("Make Post Description: " + editDescription.getText().toString());
+                    Post post = new Post(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString(), mUser.getUid());
+                    Map<String, Object> postValues = post.toMap();
+                    Map<String, Object> childUpdates = new HashMap<>();
+                    Map<String, Object> userUpdates = new HashMap<>();
+                    childUpdates.put("/posts/" + key, postValues);
+                    userUpdates.put("/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/posts/" + key, postValues);
 
-                startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
+                    mDatabase.updateChildren(childUpdates);
+                    mDatabase.updateChildren(userUpdates);
+
+                    startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
+                }
 
             }
         });
+    }
+
+    public boolean isValidPost(String pTitle, String pDescription, String pBody) {
+
+        if (!TextUtils.isEmpty(pTitle) && !TextUtils.isEmpty(pDescription) && !TextUtils.isEmpty(pBody)) {
+            return true;
+        }
+        return false;
     }
 
 }
