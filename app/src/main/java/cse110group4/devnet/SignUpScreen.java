@@ -43,7 +43,7 @@ public class SignUpScreen extends AppCompatActivity {
         ss.setSpan(clickableSpan, 25, 32, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         mClickableTextView.setText(ss);
         mClickableTextView.setMovementMethod(LinkMovementMethod.getInstance());
-        mClickableTextView.setTextColor(Color.BLUE);
+        //mClickableTextView.setTextColor(Color.BLUE);
         mClickableTextView.setHighlightColor(Color.TRANSPARENT);
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
