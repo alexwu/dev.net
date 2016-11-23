@@ -63,6 +63,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
                 Intent post = new Intent(v.getContext(), PostPage.class);
                 post.putExtra("title", projects.get(iteration).getTitle());
                 post.putExtra("content", projects.get(iteration).getBody());
+                post.putExtra("id", projects.get(iteration).getPostId());
 
                 System.out.println("Clicked");
                 v.getContext().startActivity(post);

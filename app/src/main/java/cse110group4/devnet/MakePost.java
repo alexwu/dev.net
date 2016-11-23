@@ -142,7 +142,7 @@ public class MakePost extends AppCompatActivity {
                 if (isValidPost(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString())) {
                     String key = mDatabase.child("posts").push().getKey();
                     System.out.println("Make Post Description: " + editDescription.getText().toString());
-                    Post post = new Post(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString(), mUser.getUid());
+                    Post post = new Post(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString(), mUser.getUid(), key);
                     Map<String, Object> postValues = post.toMap();
                     Map<String, Object> childUpdates = new HashMap<>();
                     Map<String, Object> userUpdates = new HashMap<>();

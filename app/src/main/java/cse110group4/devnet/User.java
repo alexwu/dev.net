@@ -21,9 +21,9 @@ public class User {
     private String username;
     private boolean isDeveloper;
     private boolean isClient;
-    private List<Project> projects = new ArrayList<Project>();
-    private Map<String, Post> posts = new HashMap<String, Post>();
-    private Map<String, String> favorites = new HashMap<String, String>();
+    private List<Project> projects = new ArrayList<>();
+    private Map<String, Post> posts = new HashMap<>();
+    private Map<String, Object> favorites = new HashMap<>();
 
     public User() {}
 
@@ -75,16 +75,25 @@ public class User {
         return password;
     }
 
-    public Map<String, String> getFavorites() {
+    public Map<String, Object> getFavorites() {
         return favorites;
     }
-
-    public void setFavorites(Map<String, String> favorites) {
+    public void setFavorites(Map<String, Object> favorites) {
         this.favorites = favorites;
     }
-
+    public boolean isFavorite(String postId) {
+        return favorites.containsKey(postId);
+    }
+    public void deleteFavorite(String postId) {
+        if (favorites.containsKey(postId)) {
+            favorites.remove(postId);
+        }
+        else {
+            System.out.println("Post not found!");
+        }
+    }
     public void addPost(String title, String skills, String body, String key) {
-        posts.put(key, new Post(title, skills, body, FirebaseAuth.getInstance().getCurrentUser().getUid()));
+        posts.put(key, new Post(title, skills, body, FirebaseAuth.getInstance().getCurrentUser().getUid(), key));
     }
 
 }

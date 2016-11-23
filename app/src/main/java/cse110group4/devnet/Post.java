@@ -14,23 +14,20 @@ public class Post {
     private String description;
     private String body;
     private String userId;
+    private String postId;
     private int starCount;
+
     public Map<String, Boolean> stars = new HashMap<>();
-    private static int postId = 0;
 
     public Post() {}
 
-    public Post(String title, String description, String body, String userId) {
+    public Post(String title, String description, String body, String userId, String postId) {
 
         this.title = title;
         this.description = description;
         this.body = body;
         this.userId = userId;
-        this.postId = postId + 1;
-    }
-
-    public static int getPostId() {
-        return postId;
+        this.postId = postId;
     }
 
     public String getDescription() {
@@ -77,6 +74,14 @@ public class Post {
         this.starCount = starCount;
     }
 
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
+    public String getPostId() {
+        return this.postId;
+    }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -86,6 +91,7 @@ public class Post {
         result.put("starCount", starCount);
         result.put("stars", stars);
         result.put("userId", userId);
+        result.put("postId", postId);
 
         return result;
     }

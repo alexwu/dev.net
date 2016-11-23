@@ -98,7 +98,6 @@ public class PostListFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                // ...
             }
         };
 
