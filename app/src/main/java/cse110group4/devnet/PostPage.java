@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.google.android.gms.fitness.data.Value;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
@@ -37,6 +39,8 @@ public class PostPage extends AppCompatActivity {
     private FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private ValueEventListener userPostListener;
+    private User currentUser;
     private TextView post_content;
     private Toolbar toolbar;
     private Intent lastIntent;
@@ -79,19 +83,45 @@ public class PostPage extends AppCompatActivity {
                 // ...
             }
         };
+        userPostListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+
+                currentUser = dataSnapshot.child(mUser.getUid()).getValue(User.class);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("TEST", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+        mDatabase.child("users").addValueEventListener(userPostListener);
+
         lastIntent = getIntent();
         this.setTitle(lastIntent.getStringExtra("title"));
         post_content = (TextView) findViewById(R.id.post_contents);
         post_content.setText(lastIntent.getStringExtra("content"));
     }
-    private void addFavorite() {
-        Map<String, Object> userUpdates = new HashMap<>();
-        Map<String, Object> favorite = new HashMap<>();
-        System.out.println(lastIntent.getStringExtra("id"));
-        favorite.put(lastIntent.getStringExtra("id"), "test");
-        userUpdates.put("/users/" + mUser.getUid() + "/favorites/", favorite);
+    private void toggleFavorite(MenuItem item) {
 
-        mDatabase.updateChildren(userUpdates);
+        if (currentUser.isFavorite(lastIntent.getStringExtra("id"))) {
+            mDatabase.child("users").child(mUser.getUid()).child("favorites").child(lastIntent.getStringExtra("id")).removeValue();
+            item.setIcon(R.drawable.ic_action_not_important);
+        }
+        else {
+            Map<String, Object> userUpdates = new HashMap<>();
+            Map<String, Object> favorite = new HashMap<>();
+            System.out.println(lastIntent.getStringExtra("id"));
+            favorite.put(lastIntent.getStringExtra("id"), "test");
+            userUpdates.put("/users/" + mUser.getUid() + "/favorites/", favorite);
+
+            mDatabase.updateChildren(userUpdates);
+            item.setIcon(R.drawable.ic_action_important);
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,7 +134,7 @@ public class PostPage extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_favorite:
 
-                addFavorite();
+                toggleFavorite(item);
                 return true;
 
             default:
