@@ -87,7 +87,7 @@ public class PostListFragment extends Fragment {
 
                 for (DataSnapshot post : dataSnapshot.getChildren()) {
                     Post nextPost = post.getValue(Post.class);
-                    mDataset.add(nextPost);
+                    mDataset.add(0, nextPost);
                 }
 
                 refreshLayout.setRefreshing(false);
@@ -112,7 +112,7 @@ public class PostListFragment extends Fragment {
                     System.out.println(currentUser.getPosts());
                      for (Map.Entry<String, Post> post : currentUser.getPosts().entrySet()) {
                         Post nextPost = post.getValue();
-                        mDataset.add(nextPost);
+                        mDataset.add(0, nextPost);
                     }
                     refreshLayout.setRefreshing(false);
                 }
@@ -147,9 +147,8 @@ public class PostListFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                for (int i = 0; i < mDataset.size(); i++) {
-                    mDataset.remove(i);
-                }
+                mDataset.clear();
+                
                 mDatabase.child("users").addListenerForSingleValueEvent(userPostListener);
                 refreshLayout.setRefreshing(false);
             }
