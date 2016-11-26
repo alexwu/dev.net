@@ -50,6 +50,7 @@ public class HomeWithDrawer extends AppCompatActivity
     private DatabaseReference mReference;
     private TextView nameHeader;
     private TextView emailHeader;
+    private FloatingActionButton fab;
 
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
@@ -95,6 +96,15 @@ public class HomeWithDrawer extends AppCompatActivity
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent makePost = new Intent(getApplicationContext(), MakePost.class);
+                startActivity(makePost);
+            }
+        });
 
         userPostListener = new ValueEventListener() {
             @Override
@@ -106,6 +116,10 @@ public class HomeWithDrawer extends AppCompatActivity
 
                 user = dataSnapshot.child(mUser.getUid()).getValue(User.class);
 
+                if (user.isClient()) {
+                    fab.show();
+                    fab.setImageResource(R.drawable.ic_action_new);
+                }
                 //System.out.println(user.getName());
                 nameHeader.setText(user.getName());
                 //nameHeader.setText("I'm a fucking user");
@@ -120,15 +134,6 @@ public class HomeWithDrawer extends AppCompatActivity
             }
         };
         mReference.child("users").addListenerForSingleValueEvent(userPostListener);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               Intent makePost = new Intent(getApplicationContext(), MakePost.class);
-                startActivity(makePost);
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

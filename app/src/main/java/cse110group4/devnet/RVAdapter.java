@@ -67,7 +67,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
 
                 System.out.println("Clicked");
                 v.getContext().startActivity(post);
-
             }
         });
 

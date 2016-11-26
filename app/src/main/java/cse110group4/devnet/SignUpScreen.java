@@ -26,7 +26,6 @@ public class SignUpScreen extends AppCompatActivity {
         signUpButton = (Button) findViewById(R.id.button2);
         mClickableTextView = (TextView) findViewById(R.id.clickableText);
 
-
         SpannableString ss = new SpannableString(mClickableTextView.getText().toString());
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override

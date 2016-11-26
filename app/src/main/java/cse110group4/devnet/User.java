@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by jamesbombeelu on 11/6/16.
+ * Created by alexwu on 11/6/16.
  */
 
 public class User {
@@ -19,6 +19,7 @@ public class User {
     private String email;
     private String password;
     private String username;
+    private String githubUrl;
     private boolean isDeveloper;
     private boolean isClient;
     private List<Project> projects = new ArrayList<>();
@@ -96,4 +97,11 @@ public class User {
         posts.put(key, new Post(title, skills, body, FirebaseAuth.getInstance().getCurrentUser().getUid(), key));
     }
 
+    public String getGithubUrl() {
+        return githubUrl;
+    }
+
+    public void setGithubUrl(String githubUrl) {
+        this.githubUrl = githubUrl;
+    }
 }
