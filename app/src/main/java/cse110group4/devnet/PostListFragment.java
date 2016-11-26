@@ -148,7 +148,7 @@ public class PostListFragment extends Fragment {
             @Override
             public void onRefresh() {
                 mDataset.clear();
-                
+
                 mDatabase.child("users").addListenerForSingleValueEvent(userPostListener);
                 refreshLayout.setRefreshing(false);
             }

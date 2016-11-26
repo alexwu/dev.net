@@ -82,18 +82,21 @@
             </android.support.design.widget.TextInputLayout>
 
 
-            <RadioButton
+            <CheckBox
                 android:text="Developer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/devButton"
+                android:onClick="onCheckBoxClicked"
                 android:visibility="gone"/>
 
-            <RadioButton
+            <CheckBox
                 android:text="Client"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/clientButton"
+                android:onClick="onCheckBoxClicked"
+
                 android:visibility="gone"/>
 
             <Button

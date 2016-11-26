@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -37,8 +38,8 @@ public class MakeUser extends AppCompatActivity {
     private View mLoginFormView;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private RadioButton mDevButton;
-    private RadioButton mClientButton;
+    private CheckBox mDevButton;
+    private CheckBox mClientButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +74,8 @@ public class MakeUser extends AppCompatActivity {
                 return false;
             }
         });
-        mDevButton = (RadioButton) findViewById(R.id.devButton);
-        mClientButton = (RadioButton) findViewById(R.id.clientButton);
+        mDevButton = (CheckBox) findViewById(R.id.devButton);
+        mClientButton = (CheckBox) findViewById(R.id.clientButton);
         mDevButton.setVisibility(View.VISIBLE);
         mClientButton.setVisibility(View.VISIBLE);
         mNameView.setVisibility(View.VISIBLE);
@@ -89,6 +90,20 @@ public class MakeUser extends AppCompatActivity {
         });
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    public void onCheckBoxClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+
+        if (checked) {
+            //((CheckBox) view).setChecked(false);
+            Log.d("CheckBox: ", "is Checked!");
+        }
+        else {
+            //((CheckBox) view).setChecked(true);
+            Log.d("CheckBox: ", "is not Checked!");
+        }
     }
 
     private void attemptCreate() {
