@@ -183,9 +183,10 @@ public class PostPage extends AppCompatActivity {
             Map<String, Object> favorite = new HashMap<>();
             System.out.println(lastIntent.getStringExtra("id"));
             favorite.put(lastIntent.getStringExtra("id"), "test");
-            userUpdates.put("/users/" + mUser.getUid() + "/favorites/" + lastIntent.getStringExtra("id"), favorite);
+            userUpdates.put(lastIntent.getStringExtra("id"), favorite);
+            //userUpdates.put("/users/" + mUser.getUid() + "/favorites/" + lastIntent.getStringExtra("id"), favorite);
 
-            mDatabase.updateChildren(userUpdates);
+            mDatabase.child("users").child(mUser.getUid()).child("favorites").updateChildren(userUpdates);
             item.setIcon(R.drawable.ic_action_important);
         }
     }

@@ -50,6 +50,8 @@ public class FavoritesFragment extends Fragment {
     private SwipeRefreshLayout refreshLayout;
     private User currentUser;
     private ValueEventListener favoritePostListener;
+    private ValueEventListener postListener;
+    private ArrayList<String> favoriteIds = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,20 +60,40 @@ public class FavoritesFragment extends Fragment {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
+        postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                DataSnapshot posts = dataSnapshot.child("posts");
+                for (int i = 0; i < favoriteIds.size(); i++) {
+                    if (posts.child(favoriteIds.get(i)) != null) {
+                        mDataset.add(0, posts.child(favoriteIds.get(i)).getValue(Post.class));
+                    }
+                }
+
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+
         favoritePostListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
 
+                favoriteIds.clear();
                 currentUser = dataSnapshot.getValue(User.class);
-
                 for (Map.Entry<String, Object> post : currentUser.getFavorites().entrySet()) {
                     String postId = post.getKey();
-                    Post nextPost = dataSnapshot.child("posts").child(postId).getValue(Post.class);
-                    if (!nextPost.isDone()) {
-                        mDataset.add(0, nextPost);
-                    }
+                    favoriteIds.add(0, postId);
                 }
+                mDataset.clear();
+                mDatabase.addListenerForSingleValueEvent(postListener);
                 refreshLayout.setRefreshing(false);
             }
 
@@ -101,9 +123,10 @@ public class FavoritesFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                favoriteIds.clear();
                 mDataset.clear();
 
-                mDatabase.child("users").addListenerForSingleValueEvent(favoritePostListener);
+                mDatabase.child("users").child(mUser.getUid()).addListenerForSingleValueEvent(favoritePostListener);
                 refreshLayout.setRefreshing(false);
             }
         });

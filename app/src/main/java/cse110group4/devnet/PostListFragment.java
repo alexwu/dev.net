@@ -85,6 +85,7 @@ public class PostListFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
 
+                mDataset.clear();
                 for (DataSnapshot post : dataSnapshot.getChildren()) {
                     Post nextPost = post.getValue(Post.class);
                     mDataset.add(0, nextPost);
@@ -107,7 +108,7 @@ public class PostListFragment extends Fragment {
                 // Get Post object and use the values to update the UI
 
                 User currentUser = dataSnapshot.child(mUser.getUid()).getValue(User.class);
-
+                mDataset.clear();
                 if (currentUser.isClient()) {
                     System.out.println(currentUser.getPosts());
                      for (Map.Entry<String, Post> post : currentUser.getPosts().entrySet()) {
