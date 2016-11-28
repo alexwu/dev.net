@@ -2,7 +2,9 @@ package cse110group4.devnet;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,7 +18,9 @@ public class Post {
     private String userId;
     private String postId;
     private int starCount;
+    private boolean done = false;
 
+    private Map<String, Boolean> tags = new HashMap<>();
     public Map<String, Boolean> stars = new HashMap<>();
 
     public Post() {}
@@ -82,6 +86,22 @@ public class Post {
         return this.postId;
     }
 
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    public void setTags(Map<String, Boolean> tags) {
+        this.tags = tags;
+    }
+
+    public Map<String, Boolean> getTags() {
+        return tags;
+    }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -92,6 +112,8 @@ public class Post {
         result.put("stars", stars);
         result.put("userId", userId);
         result.put("postId", postId);
+        result.put("done", done);
+        result.put("tags", tags);
 
         return result;
     }

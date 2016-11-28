@@ -22,7 +22,6 @@ public class User {
     private String githubUrl;
     private boolean isDeveloper;
     private boolean isClient;
-    private List<Project> projects = new ArrayList<>();
     private Map<String, Post> posts = new HashMap<>();
     private Map<String, Object> favorites = new HashMap<>();
 

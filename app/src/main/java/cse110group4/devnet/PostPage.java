@@ -40,10 +40,15 @@ public class PostPage extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseAuth.AuthStateListener mAuthListener;
     private ValueEventListener userPostListener;
+    private ValueEventListener postsListener;
     private User currentUser;
+    private Post currentPost;
+    private String postId;
     private TextView post_content;
     private Toolbar toolbar;
     private Intent lastIntent;
+    private FloatingActionButton fab;
+    private final String TAG = "PostPage";
     String key = "recipientEmail";
 
     @Override
@@ -53,32 +58,24 @@ public class PostPage extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent request = new Intent(getApplicationContext(), RequestProject.class);
-                //TODO: need to get email address instead of whatever is in content
-                String recipientEmail = lastIntent.getStringExtra("content");
+        lastIntent = getIntent();
+        this.setTitle(lastIntent.getStringExtra("title"));
+        post_content = (TextView) findViewById(R.id.post_contents);
+        post_content.setText(lastIntent.getStringExtra("content"));
+        postId = lastIntent.getStringExtra("id");
 
-                Bundle bundle = new Bundle();
+        fab = (FloatingActionButton) findViewById(R.id.fab);
 
-                bundle.putString(key, recipientEmail);
-
-                request.putExtras(bundle);
-                startActivity(request);
-            }
-        });
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                  mUser = firebaseAuth.getCurrentUser();
                 if (mUser != null) {
                     // User is signed in
-                    Log.d("TEST", "onAuthStateChanged:signed_in:" + mUser.getUid());
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
                 } else {
                     // User is signed out
-                    Log.d("TEST", "onAuthStateChanged:signed_out");
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
                 // ...
             }
@@ -95,16 +92,67 @@ public class PostPage extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
-                Log.w("TEST", "loadPost:onCancelled", databaseError.toException());
-                // ...
+
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+
             }
         };
-        mDatabase.child("users").addValueEventListener(userPostListener);
+        postsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                currentPost = dataSnapshot.child(postId).getValue(Post.class);
+                if (currentUser.isDeveloper()) {
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
-        lastIntent = getIntent();
-        this.setTitle(lastIntent.getStringExtra("title"));
-        post_content = (TextView) findViewById(R.id.post_contents);
-        post_content.setText(lastIntent.getStringExtra("content"));
+                            Intent request = new Intent(getApplicationContext(), RequestProject.class);
+                            //TODO: need to get email address instead of whatever is in content
+                            String recipientEmail = lastIntent.getStringExtra("content");
+
+                            Bundle bundle = new Bundle();
+
+                            bundle.putString(key, recipientEmail);
+
+                            request.putExtras(bundle);
+                            startActivity(request);
+                        }
+                    });
+                } else {
+                    fab.setImageResource(R.drawable.ic_edit_white_48dp);
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            Intent editPost = new Intent(getApplicationContext(), MakePost.class);
+                            Bundle postBundle = new Bundle();
+                            postBundle.putString("title", currentPost.getTitle());
+                            postBundle.putString("description", currentPost.getDescription());
+                            postBundle.putString("body", currentPost.getBody());
+                            postBundle.putString("id", currentPost.getPostId());
+
+                            editPost.putExtra("post", postBundle);
+                            editPost.putExtra("isNew", false);
+
+                            startActivity(editPost);
+
+                            //dataSnapshot.child("posts").child(getIntent().getStringExtra("id")).child
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+
+            }
+        };
+
+        mDatabase.child("users").addValueEventListener(userPostListener);
+        mDatabase.child("posts").addListenerForSingleValueEvent(postsListener);
+
     }
     private void toggleFavorite(MenuItem item) {
 
@@ -127,9 +175,12 @@ public class PostPage extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.post_page_toolbar, menu);
-        MenuItem star = menu.findItem(R.id.action_favorite);
-        if (currentUser.isFavorite(lastIntent.getStringExtra("id"))) {
-            star.setIcon(R.drawable.ic_action_important);
+        if(currentUser.isDeveloper()) {
+            MenuItem star = menu.findItem(R.id.action_favorite);
+            star.setVisible(true);
+            if (currentUser.isFavorite(lastIntent.getStringExtra("id"))) {
+                star.setIcon(R.drawable.ic_action_important);
+            }
         }
         return true;
     }
@@ -137,8 +188,9 @@ public class PostPage extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_favorite:
-
-                toggleFavorite(item);
+                if(currentUser.isDeveloper()) {
+                    toggleFavorite(item);
+                }
                 return true;
 
             default:

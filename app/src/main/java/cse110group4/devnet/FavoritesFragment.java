@@ -21,8 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import cse110group4.devnet.dummy.DummyContent;
-import cse110group4.devnet.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,8 +68,9 @@ public class FavoritesFragment extends Fragment {
                 for (Map.Entry<String, Object> post : currentUser.getFavorites().entrySet()) {
                     String postId = post.getKey();
                     Post nextPost = dataSnapshot.child("posts").child(postId).getValue(Post.class);
-                    mDataset.add(0, nextPost);
-
+                    if (!nextPost.isDone()) {
+                        mDataset.add(0, nextPost);
+                    }
                 }
                 refreshLayout.setRefreshing(false);
             }
@@ -81,7 +80,6 @@ public class FavoritesFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                // ...
             }
         };
         mDatabase.addValueEventListener(favoritePostListener);

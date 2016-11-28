@@ -6,5 +6,6 @@
         android:id="@+id/action_favorite"
         android:icon="@drawable/ic_action_not_important"
         android:title="@string/action_favorite"
+        android:visible="false"
         app:showAsAction="ifRoom"/>
 </menu>

@@ -108,13 +108,14 @@ public class HomeWithDrawer extends AppCompatActivity
             }
         });
 
+
         userPostListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
 
-                nameHeader = (TextView) findViewById(R.id.nameHeader);
-                emailHeader = (TextView) findViewById(R.id.emailHeader);
+                TextView nameHeader = (TextView) findViewById(R.id.nameHeader);
+                TextView emailHeader = (TextView) findViewById(R.id.emailHeader);
 
 
 
@@ -132,7 +133,7 @@ public class HomeWithDrawer extends AppCompatActivity
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
-                // ...
+
             }
         };
         mReference.child("users").addListenerForSingleValueEvent(userPostListener);
@@ -243,7 +244,7 @@ public class HomeWithDrawer extends AppCompatActivity
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
-            //mAuth.removeAuthStateListener(mAuthListener);
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
     @Override
@@ -252,6 +253,9 @@ public class HomeWithDrawer extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            if(user.isDeveloper()) {
+                drawerMenu.findItem(R.id.fourth_item).setVisible(true);
+            }
             super.onBackPressed();
         }
     }
@@ -261,11 +265,8 @@ public class HomeWithDrawer extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home_with_drawer, menu);
 
-        this.drawerMenu = menu;
-
         return true;
     }
-
 
 
     @Override

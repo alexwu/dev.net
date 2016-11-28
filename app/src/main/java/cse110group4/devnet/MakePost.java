@@ -32,17 +32,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MakePost extends AppCompatActivity {
-    // Use to get text field values
+
     String[] devpost = new String[3];
     public void returnString(String stuff, int index){
         devpost[index] = stuff;
     }
     private EditText editTitle;
-    private EditText editSkills;
+    private EditText editBody;
     private EditText editDescription;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private Intent lastIntent;
+
+    private final String TAG = "MakePost";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +58,26 @@ public class MakePost extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
+        lastIntent = getIntent();
+
         editTitle = (EditText)findViewById(R.id.project_title);
+        editDescription = (EditText)findViewById(R.id.skills_needed);
+        editBody = (EditText)findViewById(R.id.description);
+        if(!lastIntent.getBooleanExtra("isNew", true)) {
+            editTitle.setText(lastIntent.getBundleExtra("post").getString("title"), TextView.BufferType.EDITABLE);
+            editDescription.setText(lastIntent.getBundleExtra("post").getString("description"), TextView.BufferType.EDITABLE);
+            editBody.setText(lastIntent.getBundleExtra("post").getString("body"), TextView.BufferType.EDITABLE);
+            Log.d(TAG, "is an edited post!");
+        }
+
+
         editTitle.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 
                 boolean handled = false;
                 if (i == EditorInfo.IME_ACTION_NEXT) {
-                    String inputText = textView.getText().toString();
+         /*           String inputText = textView.getText().toString();
                     returnString(inputText, 0);
                     // OPTIONAL: show toast for input
                     //Toast.makeText(MakePost.this, "Project: "
@@ -73,7 +88,7 @@ public class MakePost extends AppCompatActivity {
                             getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                             InputMethodManager.HIDE_NOT_ALWAYS);
-
+*/
                     handled = true;
                 }
                 return handled;
@@ -81,8 +96,7 @@ public class MakePost extends AppCompatActivity {
 
         });
 
-        editSkills = (EditText)findViewById(R.id.skills_needed);
-        editSkills.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        editDescription.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 boolean handled = false;
@@ -106,10 +120,9 @@ public class MakePost extends AppCompatActivity {
 
         });
 
-        editDescription = (EditText)findViewById(R.id.description);
-        editDescription.setHorizontallyScrolling(false);
-        editDescription.setMaxLines(10);
-        editDescription.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        editBody.setHorizontallyScrolling(false);
+        editBody.setMaxLines(10);
+        editBody.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 
@@ -118,8 +131,8 @@ public class MakePost extends AppCompatActivity {
                     String inputText = textView.getText().toString();
                     returnString(inputText, 2);
                     // OPTIONAL: show toast for input
-                    //Toast.makeText(MakePost.this, "Description: "
-                    //        + inputText, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MakePost.this, "Description: "
+                            + inputText, Toast.LENGTH_SHORT).show();
 
                     //close keyboard
                     InputMethodManager inputManager = (InputMethodManager)
@@ -138,21 +151,39 @@ public class MakePost extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!lastIntent.getBooleanExtra("isNew", true)) {
+                    if (isValidPost(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString())) {
+                        String key = lastIntent.getBundleExtra("post").getString("id");
+                        System.out.println("Make Post Description: " + editDescription.getText().toString());
+                        Post post = new Post(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), mUser.getUid(), key);
+                        Map<String, Object> postValues = post.toMap();
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        Map<String, Object> userUpdates = new HashMap<>();
+                        childUpdates.put("/posts/" + key, postValues);
+                        userUpdates.put("/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/posts/" + key, postValues);
 
-                if (isValidPost(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString())) {
-                    String key = mDatabase.child("posts").push().getKey();
-                    System.out.println("Make Post Description: " + editDescription.getText().toString());
-                    Post post = new Post(editTitle.getText().toString(), editSkills.getText().toString(), editDescription.getText().toString(), mUser.getUid(), key);
-                    Map<String, Object> postValues = post.toMap();
-                    Map<String, Object> childUpdates = new HashMap<>();
-                    Map<String, Object> userUpdates = new HashMap<>();
-                    childUpdates.put("/posts/" + key, postValues);
-                    userUpdates.put("/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/posts/" + key, postValues);
+                        mDatabase.updateChildren(childUpdates);
+                        mDatabase.updateChildren(userUpdates);
 
-                    mDatabase.updateChildren(childUpdates);
-                    mDatabase.updateChildren(userUpdates);
+                        startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
+                    }
+                }
+                else {
+                    if (isValidPost(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString())) {
+                        String key = mDatabase.child("posts").push().getKey();
+                        System.out.println("Make Post Description: " + editDescription.getText().toString());
+                        Post post = new Post(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), mUser.getUid(), key);
+                        Map<String, Object> postValues = post.toMap();
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        Map<String, Object> userUpdates = new HashMap<>();
+                        childUpdates.put("/posts/" + key, postValues);
+                        userUpdates.put("/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/posts/" + key, postValues);
 
-                    startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
+                        mDatabase.updateChildren(childUpdates);
+                        mDatabase.updateChildren(userUpdates);
+
+                        startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
+                    }
                 }
 
             }
