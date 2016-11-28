@@ -117,7 +117,7 @@ public class PostPage extends AppCompatActivity {
             Map<String, Object> favorite = new HashMap<>();
             System.out.println(lastIntent.getStringExtra("id"));
             favorite.put(lastIntent.getStringExtra("id"), "test");
-            userUpdates.put("/users/" + mUser.getUid() + "/favorites/", favorite);
+            userUpdates.put("/users/" + mUser.getUid() + "/favorites/" + lastIntent.getStringExtra("id"), favorite);
 
             mDatabase.updateChildren(userUpdates);
             item.setIcon(R.drawable.ic_action_important);
@@ -127,6 +127,10 @@ public class PostPage extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.post_page_toolbar, menu);
+        MenuItem star = menu.findItem(R.id.action_favorite);
+        if (currentUser.isFavorite(lastIntent.getStringExtra("id"))) {
+            star.setIcon(R.drawable.ic_action_important);
+        }
         return true;
     }
     @Override

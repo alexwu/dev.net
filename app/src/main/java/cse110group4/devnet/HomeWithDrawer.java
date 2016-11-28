@@ -51,6 +51,8 @@ public class HomeWithDrawer extends AppCompatActivity
     private TextView nameHeader;
     private TextView emailHeader;
     private FloatingActionButton fab;
+    private boolean isClient = false;
+    private Menu drawerMenu;
 
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
@@ -114,16 +116,16 @@ public class HomeWithDrawer extends AppCompatActivity
                 nameHeader = (TextView) findViewById(R.id.nameHeader);
                 emailHeader = (TextView) findViewById(R.id.emailHeader);
 
+
+
                 user = dataSnapshot.child(mUser.getUid()).getValue(User.class);
 
                 if (user.isClient()) {
                     fab.show();
                     fab.setImageResource(R.drawable.ic_action_new);
+                    isClient = true;
                 }
-                //System.out.println(user.getName());
                 nameHeader.setText(user.getName());
-                //nameHeader.setText("I'm a fucking user");
-
                 emailHeader.setText(user.getEmail());
             }
 
@@ -143,6 +145,8 @@ public class HomeWithDrawer extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        drawerMenu = navigationView.getMenu();
+
         if (findViewById(R.id.home_frame) != null) {
 
             if (savedInstanceState != null) {
@@ -256,8 +260,13 @@ public class HomeWithDrawer extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home_with_drawer, menu);
+
+        this.drawerMenu = menu;
+
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -282,18 +291,32 @@ public class HomeWithDrawer extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.first_item) {
 
-        } else if (id == R.id.nav_slideshow) {
+            mToolbar.setTitle("Home");
+            PostListFragment newFragment = new PostListFragment();
 
-        } else if (id == R.id.nav_manage) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.home_frame, newFragment).commit();
+        } else if (id == R.id.second_item) {
 
+            mToolbar.setTitle("My Projects");
+        } else if (id == R.id.third_item) {
+
+            mToolbar.setTitle("Messages");
+        } else if (id == R.id.fourth_item) {
+
+            mToolbar.setTitle("Favorites");
+            FavoritesFragment newFragment = new FavoritesFragment();
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.home_frame, newFragment).commit();
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

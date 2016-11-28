@@ -32,14 +32,6 @@ public class ClientHomePage extends AppCompatActivity {
         rv.setLayoutManager(llm);
         rv.setHasFixedSize(true);
 
-       /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.homeFab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println("Hello");
-            }
-        });
-        //initializeAdapter(); */
     }
 
 }
