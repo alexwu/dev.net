@@ -37,7 +37,10 @@ public class MakePost extends AppCompatActivity {
     public void returnString(String stuff, int index){
         devpost[index] = stuff;
     }
+    private Bundle postBundle;
     private EditText editTitle;
+    private EditText editDeadline;
+    private EditText editPayment;
     private EditText editBody;
     private EditText editDescription;
     private DatabaseReference mDatabase;
@@ -61,12 +64,21 @@ public class MakePost extends AppCompatActivity {
         lastIntent = getIntent();
 
         editTitle = (EditText)findViewById(R.id.project_title);
+        editDeadline = (EditText) findViewById(R.id.project_deadline);
+        editPayment = (EditText) findViewById(R.id.project_payment);
         editDescription = (EditText)findViewById(R.id.skills_needed);
         editBody = (EditText)findViewById(R.id.description);
+
+
         if(!lastIntent.getBooleanExtra("isNew", true)) {
-            editTitle.setText(lastIntent.getBundleExtra("post").getString("title"), TextView.BufferType.EDITABLE);
-            editDescription.setText(lastIntent.getBundleExtra("post").getString("description"), TextView.BufferType.EDITABLE);
-            editBody.setText(lastIntent.getBundleExtra("post").getString("body"), TextView.BufferType.EDITABLE);
+            postBundle = lastIntent.getBundleExtra(("post"));
+
+            editTitle.setText(postBundle.getString("title"), TextView.BufferType.EDITABLE);
+            editDeadline.setText(postBundle.getString("deadline"), TextView.BufferType.EDITABLE);
+            editPayment.setText(postBundle.getString("payment"), TextView.BufferType.EDITABLE);
+            editDescription.setText(postBundle.getString("description"), TextView.BufferType.EDITABLE);
+            editBody.setText(postBundle.getString("body"), TextView.BufferType.EDITABLE);
+
             Log.d(TAG, "is an edited post!");
         }
 
@@ -77,18 +89,15 @@ public class MakePost extends AppCompatActivity {
 
                 boolean handled = false;
                 if (i == EditorInfo.IME_ACTION_NEXT) {
-         /*           String inputText = textView.getText().toString();
+                    String inputText = textView.getText().toString();
                     returnString(inputText, 0);
-                    // OPTIONAL: show toast for input
-                    //Toast.makeText(MakePost.this, "Project: "
-                    //        + inputText, Toast.LENGTH_SHORT).show();
 
                     //close keyboard
                     InputMethodManager inputManager = (InputMethodManager)
                             getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                             InputMethodManager.HIDE_NOT_ALWAYS);
-*/
+
                     handled = true;
                 }
                 return handled;
@@ -96,16 +105,32 @@ public class MakePost extends AppCompatActivity {
 
         });
 
-        editDescription.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        editDeadline.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+
+                boolean handled = false;
+                if (i == EditorInfo.IME_ACTION_NEXT) {
+
+                    //close keyboard
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+
+                    handled = true;
+                }
+                return handled;
+            }
+
+        });
+        editPayment.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 boolean handled = false;
                 if (i == EditorInfo.IME_ACTION_NEXT) {
                     String inputText = textView.getText().toString();
                     returnString(inputText, 1);
-                    // OPTIONAL: show toast for input
-                    //Toast.makeText(MakePost.this, "Skills needed: "
-                    //        + inputText, Toast.LENGTH_SHORT).show();
 
                     //close keyboard
                     InputMethodManager inputManager = (InputMethodManager)
@@ -119,7 +144,27 @@ public class MakePost extends AppCompatActivity {
             }
 
         });
+        editDescription.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 
+                boolean handled = false;
+                if (i == EditorInfo.IME_ACTION_NEXT) {
+                    String inputText = textView.getText().toString();
+                    returnString(inputText, 0);
+
+                    //close keyboard
+                    InputMethodManager inputManager = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+
+                    handled = true;
+                }
+                return handled;
+            }
+
+        });
         editBody.setHorizontallyScrolling(false);
         editBody.setMaxLines(10);
         editBody.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -152,10 +197,10 @@ public class MakePost extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!lastIntent.getBooleanExtra("isNew", true)) {
-                    if (isValidPost(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString())) {
+                    if (isValidPost(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), editDeadline.getText().toString(), editPayment.getText().toString())) {
                         String key = lastIntent.getBundleExtra("post").getString("id");
                         System.out.println("Make Post Description: " + editDescription.getText().toString());
-                        Post post = new Post(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), mUser.getUid(), key);
+                        Post post = new Post(editTitle.getText().toString(), editDeadline.getText().toString(), editPayment.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), mUser.getUid(), key);
                         Map<String, Object> postValues = post.toMap();
                         Map<String, Object> childUpdates = new HashMap<>();
                         Map<String, Object> userUpdates = new HashMap<>();
@@ -169,10 +214,10 @@ public class MakePost extends AppCompatActivity {
                     }
                 }
                 else {
-                    if (isValidPost(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString())) {
+                    if (isValidPost(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), editDeadline.getText().toString(), editPayment.getText().toString())) {
                         String key = mDatabase.child("posts").push().getKey();
                         System.out.println("Make Post Description: " + editDescription.getText().toString());
-                        Post post = new Post(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), mUser.getUid(), key);
+                        Post post = new Post(editTitle.getText().toString(), editDeadline.getText().toString(), editPayment.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), mUser.getUid(), key);
                         Map<String, Object> postValues = post.toMap();
                         Map<String, Object> childUpdates = new HashMap<>();
                         Map<String, Object> userUpdates = new HashMap<>();
@@ -190,9 +235,9 @@ public class MakePost extends AppCompatActivity {
         });
     }
 
-    public boolean isValidPost(String pTitle, String pDescription, String pBody) {
+    public boolean isValidPost(String pTitle, String pDescription, String pBody, String pDeadline, String pPayment) {
 
-        if (!TextUtils.isEmpty(pTitle) && !TextUtils.isEmpty(pDescription) && !TextUtils.isEmpty(pBody)) {
+        if (!TextUtils.isEmpty(pTitle) && !TextUtils.isEmpty(pDescription) && !TextUtils.isEmpty(pBody) && !TextUtils.isEmpty(pDeadline) && !TextUtils.isEmpty(pPayment)) {
             return true;
         }
         return false;

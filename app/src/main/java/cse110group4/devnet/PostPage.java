@@ -44,8 +44,13 @@ public class PostPage extends AppCompatActivity {
     private User currentUser;
     private Post currentPost;
     private String postId;
+    private TextView post_short;
+    private TextView post_deadline;
+    private TextView post_payment;
     private TextView post_content;
+
     private Toolbar toolbar;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
     private Intent lastIntent;
     private FloatingActionButton fab;
     private final String TAG = "PostPage";
@@ -56,12 +61,18 @@ public class PostPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_page);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
         setSupportActionBar(toolbar);
 
         lastIntent = getIntent();
-        this.setTitle(lastIntent.getStringExtra("title"));
+
+        post_short = (TextView) findViewById(R.id.post_short);
+        post_payment = (TextView) findViewById(R.id.post_payment);
+        post_deadline = (TextView) findViewById(R.id.post_deadline);
         post_content = (TextView) findViewById(R.id.post_contents);
-        post_content.setText(lastIntent.getStringExtra("content"));
+
+        this.setTitle(lastIntent.getStringExtra("title"));
         postId = lastIntent.getStringExtra("id");
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -101,6 +112,13 @@ public class PostPage extends AppCompatActivity {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 currentPost = dataSnapshot.child(postId).getValue(Post.class);
+
+                post_short.setText(currentPost.getDescription());
+                post_payment.setText("Payment: $" + currentPost.getPayment());
+                post_deadline.setText("Deadline: " + currentPost.getDeadline());
+                post_content.setText("Description: " + currentPost.getBody());
+
+
                 if (currentUser.isDeveloper()) {
                     fab.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -127,6 +145,8 @@ public class PostPage extends AppCompatActivity {
                             Intent editPost = new Intent(getApplicationContext(), MakePost.class);
                             Bundle postBundle = new Bundle();
                             postBundle.putString("title", currentPost.getTitle());
+                            postBundle.putString("deadline", currentPost.getDeadline());
+                            postBundle.putString("payment", currentPost.getPayment());
                             postBundle.putString("description", currentPost.getDescription());
                             postBundle.putString("body", currentPost.getBody());
                             postBundle.putString("id", currentPost.getPostId());
@@ -135,8 +155,6 @@ public class PostPage extends AppCompatActivity {
                             editPost.putExtra("isNew", false);
 
                             startActivity(editPost);
-
-                            //dataSnapshot.child("posts").child(getIntent().getStringExtra("id")).child
                         }
                     });
                 }

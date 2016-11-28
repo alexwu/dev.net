@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class Post {
     private String title;
+    private String deadline;
+    private String payment;
     private String description;
     private String body;
     private String userId;
@@ -25,9 +27,11 @@ public class Post {
 
     public Post() {}
 
-    public Post(String title, String description, String body, String userId, String postId) {
+    public Post(String title, String deadline, String payment, String description, String body, String userId, String postId) {
 
         this.title = title;
+        this.deadline = deadline;
+        this.payment = payment;
         this.description = description;
         this.body = body;
         this.userId = userId;
@@ -102,10 +106,28 @@ public class Post {
         return tags;
     }
 
+    public String getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
+    }
+
+    public String getPayment() {
+        return payment;
+    }
+
+    public void setPayment(String payment) {
+        this.payment = payment;
+    }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("title", title);
+        result.put("deadline", deadline);
+        result.put("payment", payment);
         result.put("description", description);
         result.put("body", body);
         result.put("starCount", starCount);

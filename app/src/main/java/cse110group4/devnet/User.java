@@ -92,8 +92,8 @@ public class User {
             System.out.println("Post not found!");
         }
     }
-    public void addPost(String title, String skills, String body, String key) {
-        posts.put(key, new Post(title, skills, body, FirebaseAuth.getInstance().getCurrentUser().getUid(), key));
+    public void addPost(String title, String deadline, String payment, String skills, String body, String key) {
+        posts.put(key, new Post(title, deadline, payment, skills, body, FirebaseAuth.getInstance().getCurrentUser().getUid(), key));
     }
 
     public String getGithubUrl() {

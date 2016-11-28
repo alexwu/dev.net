@@ -52,7 +52,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     @Override
     public void onBindViewHolder(final PersonViewHolder personViewHolder, int i) {
         personViewHolder.personName.setText(projects.get(i).getTitle());
-        System.out.println("Description: " + projects.get(i).getDescription());
         personViewHolder.personAge.setText(projects.get(i).getDescription());
         final int iteration = i;
         personViewHolder.cv.setOnClickListener(new View.OnClickListener() {

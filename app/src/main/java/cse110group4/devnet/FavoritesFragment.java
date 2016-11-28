@@ -63,7 +63,7 @@ public class FavoritesFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
 
-                currentUser = dataSnapshot.child("users").child(mUser.getUid()).getValue(User.class);
+                currentUser = dataSnapshot.getValue(User.class);
 
                 for (Map.Entry<String, Object> post : currentUser.getFavorites().entrySet()) {
                     String postId = post.getKey();
@@ -82,7 +82,7 @@ public class FavoritesFragment extends Fragment {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
         };
-        mDatabase.addValueEventListener(favoritePostListener);
+        mDatabase.child("users").child(mUser.getUid()).addValueEventListener(favoritePostListener);
 
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
