@@ -24,6 +24,8 @@ public class User {
     private boolean isClient;
     private Map<String, Post> posts = new HashMap<>();
     private Map<String, Object> favorites = new HashMap<>();
+    private Map<String, Object> inProgress = new HashMap<>();
+
 
     public User() {}
 
@@ -55,6 +57,10 @@ public class User {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getName() {
         return username;
     }
@@ -71,8 +77,20 @@ public class User {
         this.posts = posts;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Map<String, Object> getFavorites() {
@@ -102,5 +120,18 @@ public class User {
 
     public void setGithubUrl(String githubUrl) {
         this.githubUrl = githubUrl;
+    }
+
+    public Map<String, Object> getInProgress() {
+        return inProgress;
+    }
+
+    public void setInProgress(Map<String, Object> inProgress) {
+        this.inProgress = inProgress;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

@@ -20,8 +20,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MakeUser extends AppCompatActivity {
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mConfirmView;
     private EditText mNameView;
     private View mProgressView;
     private View mLoginFormView;
@@ -41,6 +45,8 @@ public class MakeUser extends AppCompatActivity {
     private CheckBox mDevButton;
     private CheckBox mClientButton;
 
+    private final String TAG = "MakeUser";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +54,25 @@ public class MakeUser extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         setContentView(R.layout.activity_login_screen);
-
+        this.setTitle("Sign up");
+        
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                    attemptCreate();
+                    return true;
+                }
+                return false;
+            }
+        });
+        mConfirmView = (EditText) findViewById(R.id.confirm_password);
+        mConfirmView.setVisibility(View.VISIBLE);
+        mConfirmView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
@@ -117,6 +136,7 @@ public class MakeUser extends AppCompatActivity {
         // Store values at the time of the login attempt.
         final String email = mEmailView.getText().toString();
         final String password = mPasswordView.getText().toString();
+        final String confirmPassowrd = mConfirmView.getText().toString();
         final String username = mNameView.getText().toString();
         final boolean isDev = mDevButton.isChecked();
         final boolean isClient = mClientButton.isChecked();
@@ -128,6 +148,10 @@ public class MakeUser extends AppCompatActivity {
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
+            cancel = true;
+        } else if (!password.equals(confirmPassowrd)) {
+            mConfirmView.setError("The passwords do not match!");
+            focusView = mConfirmView;
             cancel = true;
         }
 
@@ -157,15 +181,25 @@ public class MakeUser extends AppCompatActivity {
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            Log.d("TEST", "createUserInWithEmail:onComplete:" + task.isSuccessful());
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "createUserInWithEmail:onComplete:" + task.isSuccessful());
 
-                            User newUser = new User(email, password, username, isDev, isClient);
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            mDatabase.child("users").child(user.getUid()).setValue(newUser);
-                            startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
-                            showProgress(false);
+                                User newUser = new User(email, password, username, isDev, isClient);
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                mDatabase.child("users").child(user.getUid()).setValue(newUser);
+                                startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
+                                showProgress(false);
+                            }
+                            else {
+                                Log.d(TAG, "createUserInWithEmail:onComplete: false");
+                                Toast.makeText(MakeUser.this, "Email is already used!",
+                                        Toast.LENGTH_SHORT).show();
+
+                                showProgress(false);
+                            }
                          }
                     });
+
                 }
 
         }
