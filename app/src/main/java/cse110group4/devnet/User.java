@@ -22,6 +22,7 @@ public class User {
     private String githubUrl;
     private boolean isDeveloper;
     private boolean isClient;
+    private List<String> tags = new ArrayList<>();
     private Map<String, Post> posts = new HashMap<>();
     private Map<String, Object> favorites = new HashMap<>();
     private Map<String, Object> inProgress = new HashMap<>();
@@ -128,6 +129,17 @@ public class User {
 
     public void setInProgress(Map<String, Object> inProgress) {
         this.inProgress = inProgress;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+    public void addTag(String item) {
+        this.tags.add(item);
     }
 
     @Override

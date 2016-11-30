@@ -227,6 +227,12 @@ public class MakePost extends AppCompatActivity {
                         mDatabase.updateChildren(childUpdates);
                         mDatabase.updateChildren(userUpdates);
 
+                        Intent listenerIntent = new Intent(getApplicationContext(), NotificationListener.class);
+                        postBundle = new Bundle();
+                        postBundle.putString("postId", key);
+                        listenerIntent.putExtra("requestInfo", postBundle);
+                        startService(listenerIntent);
+                        Log.d(TAG, "Past the start Service Call");
                         startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
                     }
                 }

@@ -125,12 +125,13 @@ public class PostPage extends AppCompatActivity {
                         public void onClick(View view) {
 
                             Intent request = new Intent(getApplicationContext(), RequestProject.class);
-                            //TODO: need to get email address instead of whatever is in content
-                            String recipientEmail = lastIntent.getStringExtra("content");
 
                             Bundle bundle = new Bundle();
 
-                            bundle.putString(key, recipientEmail);
+                            bundle.putString("clientId", currentPost.getUserId());
+                            System.out.println(currentPost.getUserId());
+                            bundle.putString("postId", currentPost.getPostId());
+                            bundle.putString("suitorId", mUser.getUid());
 
                             request.putExtras(bundle);
                             startActivity(request);
