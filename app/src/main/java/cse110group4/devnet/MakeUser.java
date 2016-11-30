@@ -55,7 +55,7 @@ public class MakeUser extends AppCompatActivity {
 
         setContentView(R.layout.activity_login_screen);
         this.setTitle("Sign up");
-        
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
@@ -117,11 +117,11 @@ public class MakeUser extends AppCompatActivity {
 
         if (checked) {
             //((CheckBox) view).setChecked(false);
-            Log.d("CheckBox: ", "is Checked!");
+            Log.d(TAG, "Check Box is Checked!");
         }
         else {
             //((CheckBox) view).setChecked(true);
-            Log.d("CheckBox: ", "is not Checked!");
+            Log.d(TAG, "Check Box is not Checked!");
         }
     }
 
