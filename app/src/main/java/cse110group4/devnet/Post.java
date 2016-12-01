@@ -24,6 +24,7 @@ public class Post {
 
     private Map<String, Boolean> tags = new HashMap<>();
     public Map<String, Boolean> stars = new HashMap<>();
+    public Map<String, Object> suitors = new HashMap<>();
 
     public Post() {}
 
@@ -120,6 +121,18 @@ public class Post {
 
     public void setPayment(String payment) {
         this.payment = payment;
+    }
+
+    public Map<String, Object> getSuitors() {
+        return suitors;
+    }
+
+    public void setSuitors(Map<String, Object> suitors) {
+        this.suitors = suitors;
+    }
+
+    public void addSuitor(String suitorId, User suitor) {
+        suitors.put(suitorId, suitor);
     }
 
     @Exclude

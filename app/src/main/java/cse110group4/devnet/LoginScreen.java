@@ -76,10 +76,6 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
@@ -106,7 +102,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptLogin(mEmailView, mPasswordView);
                     return true;
                 }
                 return false;
@@ -117,20 +113,12 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptLogin(mEmailView, mPasswordView);
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        /*client = new GoogleApiClient.Builder(this)
-       //         .enableAutoManage(this ,
-       //         this )
-        //        .addApi(AppIndex.API)
-        //        .build();
-*/
     }
     @Override
     public void onConnectionFailed(ConnectionResult result) {
@@ -228,22 +216,18 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
         }
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
-    /*    if (mAuthTask != null) {
-            return;
-        }
-*/
+    public void attemptLogin(final AutoCompleteTextView mEmailView, final EditText mPasswordView) {
+
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
+        //Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
@@ -292,26 +276,8 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                         mPasswordView.requestFocus();
                         return;
                     }
+
                     final Intent login = new Intent(getApplicationContext(), HomeWithDrawer.class);
-                    //final String userId = mAuth.getCurrentUser().getUid();
-                  /*  mDatabase.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.child(userId).getValue(User.class).isClient()) {
-                                login.putExtra("type", "Client Home");
-                            }
-                            else {
-                                login.putExtra("type", "Developer Home");
-                            }
-                            startActivity(login);
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.w("TEST", "loadPost:onCancelled", databaseError.toException());
-                        }
-                    }); */
                     startActivity(login);
                 }
             });
@@ -333,9 +299,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -357,8 +321,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
+
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
@@ -376,8 +339,6 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
                         " = ?", new String[]{ContactsContract.CommonDataKinds.Email
                 .CONTENT_ITEM_TYPE},
 
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
@@ -407,30 +368,10 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
         mEmailView.setAdapter(adapter);
     }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("LoginScreen Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
     @Override
     public void onStart() {
         super.onStart();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-//        client.connect();
- //       AppIndex.AppIndexApi.start(client, getIndexApiAction());
         int result = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext());
         if (result != 0) {
             GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
@@ -441,13 +382,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-    //    AppIndex.AppIndexApi.end(client, getIndexApiAction());
-   //     client.disconnect();
     }
-
 
     private interface ProfileQuery {
         String[] PROJECTION = {

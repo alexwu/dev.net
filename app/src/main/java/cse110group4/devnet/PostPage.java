@@ -54,7 +54,6 @@ public class PostPage extends AppCompatActivity {
     private Intent lastIntent;
     private FloatingActionButton fab;
     private final String TAG = "PostPage";
-    String key = "recipientEmail";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +81,7 @@ public class PostPage extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                  mUser = firebaseAuth.getCurrentUser();
                 if (mUser != null) {
-                    // User is signed in
+
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
                 } else {
                     // User is signed out
@@ -94,18 +93,15 @@ public class PostPage extends AppCompatActivity {
         userPostListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
 
+                //Get the current users associated User object
                 currentUser = dataSnapshot.child(mUser.getUid()).getValue(User.class);
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
 
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-
+                Log.w(TAG, "getUserInfo:onCancelled", databaseError.toException());
             }
         };
         postsListener = new ValueEventListener() {
@@ -118,25 +114,28 @@ public class PostPage extends AppCompatActivity {
                 post_deadline.setText("Deadline: " + currentPost.getDeadline());
                 post_content.setText("Description: " + currentPost.getBody());
 
-
+                //If person is a developer, go to the page to make a request.
                 if (currentUser.isDeveloper()) {
                     fab.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
 
                             Intent request = new Intent(getApplicationContext(), RequestProject.class);
-                            //TODO: need to get email address instead of whatever is in content
-                            String recipientEmail = lastIntent.getStringExtra("content");
-
                             Bundle bundle = new Bundle();
 
-                            bundle.putString(key, recipientEmail);
+                            bundle.putString("clientId", currentPost.getUserId());
+                            bundle.putString("postId", currentPost.getPostId());
+                            bundle.putString("suitorId", mUser.getUid());
+                            bundle.putString("suitorName", currentUser.getName());
+                            bundle.putString("postTitle", currentPost.getTitle());
 
                             request.putExtras(bundle);
                             startActivity(request);
                         }
                     });
-                } else {
+                }
+                //Otherwise client should be able to edit the post and see a fab that goes with that.
+                else {
                     fab.setImageResource(R.drawable.ic_edit_white_48dp);
                     fab.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -144,6 +143,7 @@ public class PostPage extends AppCompatActivity {
 
                             Intent editPost = new Intent(getApplicationContext(), MakePost.class);
                             Bundle postBundle = new Bundle();
+
                             postBundle.putString("title", currentPost.getTitle());
                             postBundle.putString("deadline", currentPost.getDeadline());
                             postBundle.putString("payment", currentPost.getPayment());
@@ -161,10 +161,7 @@ public class PostPage extends AppCompatActivity {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-
             }
         };
 
@@ -172,8 +169,11 @@ public class PostPage extends AppCompatActivity {
         mDatabase.child("posts").addListenerForSingleValueEvent(postsListener);
 
     }
+
+    //This is called upon when star is clicked
     private void toggleFavorite(MenuItem item) {
 
+        //If the person has already favorited it, it should be filled
         if (currentUser.isFavorite(lastIntent.getStringExtra("id"))) {
             mDatabase.child("users").child(mUser.getUid()).child("favorites").child(lastIntent.getStringExtra("id")).removeValue();
             item.setIcon(R.drawable.ic_action_not_important);
@@ -181,10 +181,9 @@ public class PostPage extends AppCompatActivity {
         else {
             Map<String, Object> userUpdates = new HashMap<>();
             Map<String, Object> favorite = new HashMap<>();
-            System.out.println(lastIntent.getStringExtra("id"));
+
             favorite.put(lastIntent.getStringExtra("id"), "test");
             userUpdates.put(lastIntent.getStringExtra("id"), favorite);
-            //userUpdates.put("/users/" + mUser.getUid() + "/favorites/" + lastIntent.getStringExtra("id"), favorite);
 
             mDatabase.child("users").child(mUser.getUid()).child("favorites").updateChildren(userUpdates);
             item.setIcon(R.drawable.ic_action_important);

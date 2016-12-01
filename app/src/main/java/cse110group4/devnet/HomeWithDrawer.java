@@ -61,6 +61,8 @@ public class HomeWithDrawer extends AppCompatActivity
     // Bool to track whether the app is already resolving an error
     private boolean mResolvingError = false;
 
+    private final String TAG = "HomeWithDrawer";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,18 +81,18 @@ public class HomeWithDrawer extends AppCompatActivity
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+                mUser = firebaseAuth.getCurrentUser();
+                if (mUser != null) {
                     // User is signed in
-                    Log.d("TEST", "onAuthStateChanged:signed_in:" + user.getUid());
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
                 } else {
                     Intent goLogin = new Intent(getApplicationContext(), LoginScreen.class);
                     startActivity(goLogin);
-                    Log.d("TEST", "onAuthStateChanged:signed_out");
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
             }
         };
-        mUser = mAuth.getCurrentUser();
+        //mUser = mAuth.getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
 
@@ -114,13 +116,15 @@ public class HomeWithDrawer extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
 
-                TextView nameHeader = (TextView) findViewById(R.id.nameHeader);
-                TextView emailHeader = (TextView) findViewById(R.id.emailHeader);
+                //nameHeader = (TextView) findViewById(R.id.nameHeader);
+                //emailHeader = (TextView) findViewById(R.id.emailHeader);
 
 
-
+                mAuth = FirebaseAuth.getInstance();
+                mUser = mAuth.getCurrentUser();
                 user = dataSnapshot.child(mUser.getUid()).getValue(User.class);
 
+                System.out.println(user.getName());
                 if (user.isClient()) {
                     fab.show();
                     fab.setImageResource(R.drawable.ic_action_new);
@@ -136,7 +140,7 @@ public class HomeWithDrawer extends AppCompatActivity
 
             }
         };
-        mReference.child("users").addListenerForSingleValueEvent(userPostListener);
+        //mReference.child("users").addListenerForSingleValueEvent(userPostListener);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -147,6 +151,12 @@ public class HomeWithDrawer extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         drawerMenu = navigationView.getMenu();
+
+        View header = navigationView.getHeaderView(0);
+        nameHeader = (TextView) header.findViewById(R.id.nameHeader);
+        emailHeader = (TextView) header.findViewById(R.id.emailHeader);
+
+        mReference.child("users").addListenerForSingleValueEvent(userPostListener);
 
         if (findViewById(R.id.home_frame) != null) {
 
