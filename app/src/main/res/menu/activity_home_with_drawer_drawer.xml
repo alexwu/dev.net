@@ -22,6 +22,10 @@
             android:id="@+id/fifth_item"
             android:visible="false"
             android:title="Settings" />
+        <item
+            android:id="@+id/fifth_item"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="My Profile" />
     </group>
 
 </menu>

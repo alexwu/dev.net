@@ -326,6 +326,14 @@ public class HomeWithDrawer extends AppCompatActivity
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.home_frame, newFragment).commit();
+        } else if (id == R.id.fifth_item) {
+
+            //mToolbar.setTitle("My Profile");
+            Intent intent = new Intent(getApplicationContext(), UserProfile.class);
+            intent.putExtra("user_email", user.getEmail());
+            intent.putExtra("user_name", user.getName());
+            intent.putExtra("user_git", user.getGithubUrl());
+            startActivity(intent);
         }
 
 
