@@ -28,8 +28,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  */
 @RunWith(AndroidJUnit4.class)
 public class MakePostInstrumentedTest {
-    private PostPage mPostPage;
-
     private String ProjectTitle;
     private String Deadline;
     private String Payment;
@@ -57,11 +55,18 @@ public class MakePostInstrumentedTest {
         // Type text and then press the button.
         onView(withId(R.id.project_title))
                 .perform(typeText(ProjectTitle), closeSoftKeyboard());
+        onView(withId(R.id.project_title))
+                .perform(typeText(Deadline), closeSoftKeyboard());
+        onView(withId(R.id.project_title))
+                .perform(typeText(Payment), closeSoftKeyboard());
+        onView(withId(R.id.project_title))
+                .perform(typeText(ShortDesc), closeSoftKeyboard());
+        onView(withId(R.id.project_title))
+                .perform(typeText(LongDesc), closeSoftKeyboard());
+
         onView(withId(R.id.makePostFab)).perform(click());
 
-        // Check that the text was changed.
-        /*
-        onView(withId(R.id.textToBeChanged))
-                .check(matches(withText(mStringToBetyped)));*/
+        // Check that the post was posted (on recyclerView).
+        onView(withId(R.id.homeSwipeLayout)).check(matches(withText(ProjectTitle)));
     }
 }
