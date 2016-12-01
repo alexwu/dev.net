@@ -70,6 +70,7 @@ public class MakePost extends AppCompatActivity {
         editBody = (EditText)findViewById(R.id.description);
 
 
+        //If it's not a new post, enter in the previous text!
         if(!lastIntent.getBooleanExtra("isNew", true)) {
             postBundle = lastIntent.getBundleExtra(("post"));
 
@@ -175,9 +176,6 @@ public class MakePost extends AppCompatActivity {
                 if (i == EditorInfo.IME_ACTION_DONE) {
                     String inputText = textView.getText().toString();
                     returnString(inputText, 2);
-                    // OPTIONAL: show toast for input
-                    Toast.makeText(MakePost.this, "Description: "
-                            + inputText, Toast.LENGTH_SHORT).show();
 
                     //close keyboard
                     InputMethodManager inputManager = (InputMethodManager)
@@ -196,14 +194,16 @@ public class MakePost extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //If it is an existing post, enter edit mode
                 if(!lastIntent.getBooleanExtra("isNew", true)) {
                     if (isValidPost(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), editDeadline.getText().toString(), editPayment.getText().toString())) {
                         String key = lastIntent.getBundleExtra("post").getString("id");
-                        System.out.println("Make Post Description: " + editDescription.getText().toString());
                         Post post = new Post(editTitle.getText().toString(), editDeadline.getText().toString(), editPayment.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), mUser.getUid(), key);
                         Map<String, Object> postValues = post.toMap();
                         Map<String, Object> childUpdates = new HashMap<>();
                         Map<String, Object> userUpdates = new HashMap<>();
+
                         childUpdates.put("/posts/" + key, postValues);
                         userUpdates.put("/users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/posts/" + key, postValues);
 
@@ -213,10 +213,13 @@ public class MakePost extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
                     }
                 }
+
+                //Otherwise we will create a a new post. Find a way to simplify these two blocks!!
                 else {
                     if (isValidPost(editTitle.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), editDeadline.getText().toString(), editPayment.getText().toString())) {
+
                         String key = mDatabase.child("posts").push().getKey();
-                        System.out.println("Make Post Description: " + editDescription.getText().toString());
+                        //System.out.println("Make Post Description: " + editDescription.getText().toString());
                         Post post = new Post(editTitle.getText().toString(), editDeadline.getText().toString(), editPayment.getText().toString(), editDescription.getText().toString(), editBody.getText().toString(), mUser.getUid(), key);
                         Map<String, Object> postValues = post.toMap();
                         Map<String, Object> childUpdates = new HashMap<>();
@@ -228,19 +231,22 @@ public class MakePost extends AppCompatActivity {
                         mDatabase.updateChildren(userUpdates);
 
                         Intent listenerIntent = new Intent(getApplicationContext(), NotificationListener.class);
+
                         postBundle = new Bundle();
                         postBundle.putString("postId", key);
+                        postBundle.putString("postTitle", editTitle.getText().toString());
                         listenerIntent.putExtra("requestInfo", postBundle);
+
+                        //Starts the NotificationListener for the post described by the postBundle.
                         startService(listenerIntent);
-                        Log.d(TAG, "Past the start Service Call");
                         startActivity(new Intent(getApplicationContext(), HomeWithDrawer.class));
                     }
                 }
-
             }
         });
     }
 
+    //Checks to make sure post fields are not empty.
     public boolean isValidPost(String pTitle, String pDescription, String pBody, String pDeadline, String pPayment) {
 
         if (!TextUtils.isEmpty(pTitle) && !TextUtils.isEmpty(pDescription) && !TextUtils.isEmpty(pBody) && !TextUtils.isEmpty(pDeadline) && !TextUtils.isEmpty(pPayment)) {

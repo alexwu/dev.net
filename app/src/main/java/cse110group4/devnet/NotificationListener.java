@@ -54,8 +54,10 @@ public class NotificationListener extends Service {
         mDatabase.child("users").child(mUser.getUid()).child("posts").child(postBundle.getString("postId")).child("suitors").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
-                System.out.println("Suitor User Id: " + dataSnapshot.getKey());
-                showNotification(dataSnapshot.getKey());
+                Log.d(TAG, "SuitorName: " + dataSnapshot.getValue());
+                Log.d(TAG, "postTitle: " + postBundle.getString("postTitle"));
+
+                showNotification((String) dataSnapshot.getValue(), postBundle.getString("postTitle"));
             }
 
             @Override
@@ -75,7 +77,7 @@ public class NotificationListener extends Service {
         return START_STICKY;
     }
 
-    private void showNotification(String post) {
+    private void showNotification(String suitor, String post) {
         Intent intent = new Intent(this, PostPage.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -84,10 +86,10 @@ public class NotificationListener extends Service {
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle("New Development Request")
-                .setContentText(post + " has a new development request!")
+                .setContentText(suitor + " has sent a request for your project " + post + "!")
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .setSmallIcon(R.drawable.cast_ic_notification_small_icon)
+                .setSmallIcon(R.drawable.ic_adb_white_24dp)
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =

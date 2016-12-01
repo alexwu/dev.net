@@ -76,10 +76,6 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
@@ -106,7 +102,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptLogin(mEmailView, mPasswordView);
                     return true;
                 }
                 return false;
@@ -117,7 +113,7 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptLogin(mEmailView, mPasswordView);
             }
         });
 
@@ -220,22 +216,18 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
         }
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
-    /*    if (mAuthTask != null) {
-            return;
-        }
-*/
+    public void attemptLogin(final AutoCompleteTextView mEmailView, final EditText mPasswordView) {
+
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
+        //Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
@@ -376,19 +368,6 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
         mEmailView.setAdapter(adapter);
     }
 
-
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("LoginScreen Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -402,10 +381,8 @@ public class LoginScreen extends AppCompatActivity implements LoaderCallbacks<Cu
 
     @Override
     public void onStop() {
-
         super.onStop();
     }
-
 
     private interface ProfileQuery {
         String[] PROJECTION = {
