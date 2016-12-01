@@ -53,6 +53,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MakeUser" />
+        <activity android:name=".UserProfile"></activity>
     </application>
 
 </manifest>
